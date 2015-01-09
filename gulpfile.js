@@ -3,6 +3,7 @@ var gutil = require('gulp-util');
 var browserify = require('browserify');
 var watchify = require('watchify');
 var server = require('http-server');
+var reactify = require('reactify');
 var fs = require('fs');
 
 var files = {
@@ -18,12 +19,17 @@ gulp.task('server', function (cb) {
 	gutil.log('Server started at ' + gutil.colors.green('http://127.0.0.1:' + port));
 });
 
+function transform(file, opts) {
+	opts.es6 = true;
+	return reactify(file, opts);
+}
+
 gulp.task('watch', function () {
     var args = watchify.args;
     args.degub = true;
     var bundler = watchify(browserify(files.js.src, args));
 
-    bundler.transform('reactify');
+    bundler.transform(transform);
     bundler.on('update', rebundle);
 
     function onError(e) {
@@ -35,11 +41,11 @@ gulp.task('watch', function () {
 
         return bundler.bundle()
           .on('error', onError)
-          .pipe(fs.createWriteStream(files.js.dest))
           .on('end', function () {
               var time = Date.now() - start;
-              gutil.log('Building \'' + gutil.colors.green(files.src) + '\' in ' + gutil.colors.magenta(time + ' ms'));
-          });
+              gutil.log('Building \'' + gutil.colors.green(files.js.src) + '\' in ' + gutil.colors.magenta(time + ' ms'));
+          })
+          .pipe(fs.createWriteStream(files.js.dest));
     }
 
     rebundle();
