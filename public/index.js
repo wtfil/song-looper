@@ -3,22 +3,31 @@ var Reflux = require('reflux');
 var actions = require('./lib/audio-actions');
 var store = require('./lib/audio-store');
 var Progress = require('./components/progress');
+var PlayerTime = require('./components/player-time');
 
 var Player = React.createClass({
 
 	mixins: [Reflux.listenTo(store, 'forceUpdate')],
 
-	changeTempo(e) {
-		actions.changeTempo(e.target.value);
+	changeTempo(value) {
+		actions.changeTempo(value + 0.5);
+	},
+
+	changePosition(position) {
+		actions.changePosition(position * store.duration);
 	},
 
 	render() {
 		return <div className="player">
-			<div className="player__stop"></div>
-			<div className="player__play" onClick={actions.play}></div>
-			<div className="player__pause" onClick={actions.pause}></div>
-			<input className="player__speed" onChange={this.changeTempo} type="range" max="2" min="0" step="0.1" value={store.tempo}/>
-			<Progress current={store.current} duration={store.duration} />
+			<div className="player__controls">
+				<div className="player__stop"></div>
+				{store.isPlay ?
+					<div className="player__pause" onClick={actions.pause}></div> :
+					<div className="player__play" onClick={actions.play}></div>
+				}
+				<Progress progress={store.tempo - 0.5} onChange={this.changeTempo}/>
+			</div>
+			<PlayerTime current={store.current} duration={store.duration} onChange={this.changePosition}/>
 		</div>;
 	}
 
@@ -44,7 +53,6 @@ window.addEventListener('keyup', function (e) {
 		case 37: actions.jumpBack(); break;
 		case 39: actions.jumpForward(); break;
 	}
-	console.log(e.keyCode);
 });
 
 window.addEventListener('DOMContentLoaded', function () {

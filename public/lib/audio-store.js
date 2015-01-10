@@ -55,5 +55,8 @@ module.exports = Reflux.createStore({
 	},
 	onPausePlay() {
 		this.isPlay ? this.onPause() : this.onPlay();
+	},
+	onChangePosition(position) {
+		this.audio.currentTime = position;
 	}
 });

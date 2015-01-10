@@ -11,7 +11,8 @@ var actions = Reflux.createActions({
 	jumpForward: {},
 	jumpBack: {},
 	changeTempo: {},
-	pausePlay: {}
+	pausePlay: {},
+	changePosition: {}
 });
 
 actions.setFile.listen(function (file) {
