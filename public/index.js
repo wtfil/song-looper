@@ -38,6 +38,17 @@ var App = React.createClass({
 	}
 });
 
+window.addEventListener('keyup', function (e) {
+	switch (e.keyCode) {
+		case 32: actions.pausePlay(); break;
+		case 38: actions.speedUp(); break;
+		case 40: actions.slowDown(); break;
+		case 37: actions.jumpBack(); break;
+		case 39: actions.jumpForward(); break;
+	}
+	console.log(e.keyCode);
+});
+
 window.addEventListener('DOMContentLoaded', function () {
 	React.render(<App/>, document.body);
 });

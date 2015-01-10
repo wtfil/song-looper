@@ -3,10 +3,8 @@ var actions = require('./audio-actions');
 
 module.exports = Reflux.createStore({
 	init() {
+		this.listenToMany(actions);
 		this.listenTo(actions.setFile.completed, this.setAudio);
-		this.listenTo(actions.pause, this.pause);
-		this.listenTo(actions.play, this.play);
-		this.listenTo(actions.changeTempo, this.changeTempo);
 		this.audio = new Audio();
 		this.duration = 0;
 		this.tempo = 1;
@@ -29,15 +27,33 @@ module.exports = Reflux.createStore({
 		this.trigger();
 	},
 
-	pause() {
+	onPause() {
 		this.audio.pause();
 	},
-	play() {
+	onPlay() {
 		this.audio.play();
 	},
-	changeTempo(tempo) {
-		this.tempo = tempo;
-		this.audio.playbackRate = tempo;
+	onChangeTempo(tempo) {
+		this.tempo = this.audio.playbackRate = tempo;
 		this.trigger();
+	},
+	onSpeedUp() {
+		this.tempo = (this.audio.playbackRate += 0.1);
+		this.trigger();
+	},
+	onSlowDown() {
+		this.tempo = (this.audio.playbackRate -= 0.1);
+		this.trigger();
+	},
+	onJunmpForward() {
+		this.current = (this.audio.currentTime += 5);
+		this.trigger();
+	},
+	onJumpBack() {
+		this.current = (this.audio.currentTime -= 5);
+		this.trigger();
+	},
+	onPausePlay() {
+		this.isPlay ? this.onPause() : this.onPlay();
 	}
 });
