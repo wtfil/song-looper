@@ -16,6 +16,7 @@ var actions = Reflux.createActions({
 
 actions.setFile.listen(function (file) {
 	var reader = new FileReader();
+	console.log(file);
 	reader.onerror = console.error.bind(console);
 	reader.onload = (e) => this.completed(e.target.result);
 	reader.readAsDataURL(file);

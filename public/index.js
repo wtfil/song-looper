@@ -14,11 +14,9 @@ var Player = React.createClass({
 
 	render() {
 		return <div className="player">
-			<button className="player__stop">s</button>
-			{store.isPlay ?
-				<button className="player__pause" onClick={actions.pause}>||</button> :
-				<button className="player__play" onClick={actions.play}>p</button>
-			}
+			<div className="player__stop"></div>
+			<div className="player__play" onClick={actions.play}></div>
+			<div className="player__pause" onClick={actions.pause}></div>
 			<input className="player__speed" onChange={this.changeTempo} type="range" max="2" min="0" step="0.1" value={store.tempo}/>
 			<Progress current={store.current} duration={store.duration} />
 		</div>;
