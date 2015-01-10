@@ -1,4 +1,5 @@
 var gulp = require('gulp');
+var less = require('gulp-less');
 var gutil = require('gulp-util');
 var browserify = require('browserify');
 var watchify = require('watchify');
@@ -10,6 +11,10 @@ var files = {
 	js: {
     	src: './public/index.js',
     	dest: './public/_index.js'
+	},
+	css: {
+		src: './public/index.less',
+		dest: './public/'
 	}
 };
 
@@ -19,12 +24,24 @@ gulp.task('server', function (cb) {
 	gutil.log('Server started at ' + gutil.colors.green('http://127.0.0.1:' + port));
 });
 
+gulp.task('css', function () {
+	return gulp.src(files.css.src)
+		.pipe(less())
+		.pipe(gulp.dest(files.css.dest));
+});
+
+gulp.task('watch', ['js-watch', 'css-watch'])
+
+gulp.task('css-watch', ['css'], function () {
+	gulp.watch(files.css.src, ['css']);
+});
+
 function transform(file, opts) {
 	opts.es6 = true;
 	return reactify(file, opts);
 }
 
-gulp.task('watch', function () {
+gulp.task('js-watch', function () {
     var args = watchify.args;
     args.degub = true;
     var bundler = watchify(browserify(files.js.src, args));
