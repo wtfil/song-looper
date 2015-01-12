@@ -4,6 +4,7 @@ var actions = require('./lib/audio-actions');
 var store = require('./lib/audio-store');
 var Progress = require('./components/progress');
 var PlayerTime = require('./components/player-time');
+var songStore = require('./lib/song-store');
 
 var Player = React.createClass({
 
