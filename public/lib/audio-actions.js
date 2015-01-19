@@ -12,7 +12,8 @@ var actions = Reflux.createActions({
 	jumpBack: {},
 	changeTempo: {},
 	pausePlay: {},
-	changePosition: {}
+	changePosition: {},
+	changeSong: {}
 });
 
 actions.setFile.listen(function (file) {
@@ -20,7 +21,6 @@ actions.setFile.listen(function (file) {
 		return;
 	}
 	var reader = new FileReader();
-	console.log(file);
 	reader.onerror = console.error.bind(console);
 	reader.onload = (e) => this.completed(e.target.result);
 	reader.readAsDataURL(file);

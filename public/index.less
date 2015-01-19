@@ -2,10 +2,14 @@ html, body {
 	height: 100%;
 	margin: 0;
 	padding: 0;
+	font-family: Roboto, arial, sans-serif;
+	font-size: 14px;
 }
 
 @bg-contrast: #ff9a5c;
 @bg-dark: #5a5a5a;
+@border-color: #aaa;
+@font-color: #3f3f3f;
 
 .app {
 	position: absolute;
@@ -13,6 +17,15 @@ html, body {
 	bottom: 0;
 	padding: 10px;
 	box-sizing: border-box;
+}
+
+.song-item {
+	cursor: pointer;
+	color: @font-color;
+	padding: 10px 0;
+	& + & {
+		border-top: 1px solid @border-color;
+	}
 }
 
 .player {
@@ -111,7 +124,6 @@ html, body {
 .time {
 	position: relative;
 	&__current, &__duration {
-		font-family: Roboto, arial, sans-serif;
 		opacity: 0;
 		position: absolute;
 		top: 0;

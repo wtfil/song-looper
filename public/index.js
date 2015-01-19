@@ -4,7 +4,7 @@ var actions = require('./lib/audio-actions');
 var store = require('./lib/audio-store');
 var Progress = require('./components/progress');
 var PlayerTime = require('./components/player-time');
-var songStore = require('./lib/song-store');
+var SongsList = require('./components/songs-list');
 
 var Player = React.createClass({
 
@@ -37,6 +37,7 @@ var Player = React.createClass({
 var App = React.createClass({
 	render() {
 		return <div className="app">
+			<SongsList/>
 			<input type="file" onChange={this.onChange}/>
 			<Player/>
 		</div>;
