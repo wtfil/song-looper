@@ -25,6 +25,7 @@ var Player = React.createClass({
 
 	render() {
 		return <div className="player">
+			<PlayerTime points={songStore.getBreakPoints()} current={store.current} duration={store.duration} onChange={this.changePosition} onContextClick={this.setBreakPoint}/>
 			<div className="player__controls">
 				<div className="player__stop"></div>
 				{store.isPlay ?
@@ -33,7 +34,6 @@ var Player = React.createClass({
 				}
 				<Progress progress={store.tempo - 0.5} onChange={this.changeTempo}/>
 			</div>
-			<PlayerTime points={songStore.getBreakPoints()} current={store.current} duration={store.duration} onChange={this.changePosition} onContextClick={this.setBreakPoint}/>
 		</div>;
 	}
 
@@ -43,15 +43,8 @@ var App = React.createClass({
 	render() {
 		return <div className="app">
 			<SongsList/>
-			<label className="file-input">
-				<input type="file" onChange={this.onChange}/>
-				+
-			</label>
 			<Player/>
 		</div>;
-	},
-	onChange(e) {
-		actions.setFile(e.target.files[0]);
 	}
 });
 

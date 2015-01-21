@@ -19,8 +19,19 @@ module.exports = React.createClass({
 	displayName: 'SongsList',
 	mixins: [Reflux.listenTo(store, 'forceUpdate')],
 	render() {
-		return <div>
-			{store.songs.map(song => <Song song={song}/>)}
+		return <div className="songs-list">
+			<div className="songs-list__head">
+				<label className="file-input">
+					<input type="file" onChange={this.onChange}/>
+					<div>+ upload file</div>
+				</label>
+			</div>
+			<div className="songs-list__list">
+				{store.songs.map(song => <Song song={song}/>)}
+			</div>
 		</div>
+	},
+	onChange(e) {
+		actions.setFile(e.target.files[0]);
 	}
 });
