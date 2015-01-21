@@ -13,7 +13,8 @@ var actions = Reflux.createActions({
 	changeTempo: {},
 	pausePlay: {},
 	changePosition: {},
-	changeSong: {}
+	changeSong: {},
+	setBreakPoint: {}
 });
 
 actions.setFile.listen(function (file) {

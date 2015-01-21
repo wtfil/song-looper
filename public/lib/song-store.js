@@ -14,8 +14,7 @@ var dbStore = new IDb({
 var fluxStore = Reflux.createStore({
 	init() {
 		this.listenTo(actions.setFile.completed, 'onUrlCreated');
-		this.listenTo(actions.setFile, 'onNewFile');
-		this.listenTo(actions.changeSong, 'onChangeSong');
+		this.listenToMany(actions);
 		this.songs = [];
 	},
 
@@ -30,7 +29,18 @@ var fluxStore = Reflux.createStore({
 		this.trigger();
 	},
 
-	onNewFile(file) {
+	onSetBreakPoint(time) {
+		var song = this.currentSong;
+		if (!song) {
+			return;
+		}
+		song.breakPoints = song.breakPoints || [];
+		song.breakPoints.push(time);
+		dbStore.put(song.name, song);
+		this.trigger();
+	},
+
+	onSetFile(file) {
 		this.currentSong = {
 			name: file.name
 		};
@@ -47,6 +57,9 @@ var fluxStore = Reflux.createStore({
 	setSongs(songs) {
 		this.songs = songs;
 		this.trigger();
+	},
+	getBreakPoints() {
+		return this.currentSong && this.currentSong.breakPoints || [];
 	}
 });
 

@@ -15,9 +15,10 @@ function formatTime(time) {
 module.exports = React.createClass({
 	render() {
 		return <div className="time">
-			<Progress progress={this.props.current/this.props.duration} onChange={this.props.onChange}/>
+			<Progress progress={this.props.current/this.props.duration} onChange={this.props.onChange} onContextClick={this.props.onContextClick}/>
 			<div className="time__current">{formatTime(this.props.current)}</div>
 			<div className="time__duration">{formatTime(this.props.duration)}</div>
+			{this.props.duration ? this.props.points.map(point => <div className="time__point" style={{left: point/this.props.duration * 100 + '%'}}></div>) : null}
 		</div>
 	}
 });

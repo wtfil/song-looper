@@ -5,6 +5,7 @@ var store = require('./lib/audio-store');
 var Progress = require('./components/progress');
 var PlayerTime = require('./components/player-time');
 var SongsList = require('./components/songs-list');
+var songStore = require('./lib/song-store');
 
 var Player = React.createClass({
 
@@ -18,6 +19,10 @@ var Player = React.createClass({
 		actions.changePosition(position * store.duration);
 	},
 
+	setBreakPoint(position) {
+		actions.setBreakPoint(position * store.duration);
+	},
+
 	render() {
 		return <div className="player">
 			<div className="player__controls">
@@ -28,7 +33,7 @@ var Player = React.createClass({
 				}
 				<Progress progress={store.tempo - 0.5} onChange={this.changeTempo}/>
 			</div>
-			<PlayerTime current={store.current} duration={store.duration} onChange={this.changePosition}/>
+			<PlayerTime points={songStore.getBreakPoints()} current={store.current} duration={store.duration} onChange={this.changePosition} onContextClick={this.setBreakPoint}/>
 		</div>;
 	}
 
@@ -38,7 +43,10 @@ var App = React.createClass({
 	render() {
 		return <div className="app">
 			<SongsList/>
-			<input type="file" onChange={this.onChange}/>
+			<label className="file-input">
+				<input type="file" onChange={this.onChange}/>
+				+
+			</label>
 			<Player/>
 		</div>;
 	},
