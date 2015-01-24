@@ -14,8 +14,31 @@ var dbStore = new IDb({
 var fluxStore = Reflux.createStore({
 	init() {
 		this.listenTo(actions.setFile.completed, 'onUrlCreated');
+		this.listenTo(actions.changeFormula.valid, 'onNewFormula');
 		this.listenToMany(actions);
 		this.songs = [];
+	},
+
+	updateCurrentSong(key, value) {
+		var song = this.currentSong;
+		if (!song) {
+			return;
+		}
+		song[key] = value;
+		this.trigger();
+		dbStore.put(song.name, song);
+	},
+
+	onNewFormula(formula) {
+		this.updateCurrentSong('formula', formula);
+	},
+
+	onSetBreakPoint(time) {
+		this.updateCurrentSong('breakPoints', this.getBreakPoints().concat(time));
+	},
+
+	onUrlCreated(src) {
+		this.updateCurrentSong('src', src);
 	},
 
 	onChangeSong(name) {
@@ -29,16 +52,6 @@ var fluxStore = Reflux.createStore({
 		this.trigger();
 	},
 
-	onSetBreakPoint(time) {
-		var song = this.currentSong;
-		if (!song) {
-			return;
-		}
-		song.breakPoints = song.breakPoints || [];
-		song.breakPoints.push(time);
-		dbStore.put(song.name, song);
-		this.trigger();
-	},
 
 	onSetFile(file) {
 		this.currentSong = {
@@ -49,17 +62,16 @@ var fluxStore = Reflux.createStore({
 		this.trigger();
 	},
 
-	onUrlCreated(src) {
-		this.currentSong.src = src;
-		dbStore.put(this.currentSong.name, this.currentSong);
-		this.trigger();
-	},
 	setSongs(songs) {
 		this.songs = songs;
 		this.trigger();
 	},
+
 	getBreakPoints() {
 		return this.currentSong && this.currentSong.breakPoints || [];
+	},
+	getFormula() {
+		return this.currentSong && this.currentSong.formula || '';
 	}
 });
 

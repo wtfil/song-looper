@@ -27,6 +27,10 @@ gulp.task('server', function (cb) {
 gulp.task('css', function () {
 	return gulp.src(files.css.src)
 		.pipe(less())
+		.on('error', function (e) {
+        	gutil.log(gutil.colors.red(e.message));
+        	this.emit('end');
+		})
 		.pipe(gulp.dest(files.css.dest));
 });
 

@@ -4,6 +4,9 @@ var actions = Reflux.createActions({
 	setFile: {
 		children: ['completed']
 	},
+	changeFormula: {
+		children: ['valid', 'invalid']
+	},
 	play: {},
 	pause: {},
 	speedUp: {},
@@ -25,6 +28,10 @@ actions.setFile.listen(function (file) {
 	reader.onerror = console.error.bind(console);
 	reader.onload = (e) => this.completed(e.target.result);
 	reader.readAsDataURL(file);
+});
+
+actions.changeFormula.listen(function (formula) {
+	this.valid(formula);
 });
 
 module.exports = actions;
