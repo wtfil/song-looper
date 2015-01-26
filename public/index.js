@@ -24,7 +24,6 @@ var Player = React.createClass({
 	},
 
 	changeFormula(e) {
-		console.time('formula')
 		actions.changeFormula(e.target.value);
 	},
 

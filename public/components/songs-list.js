@@ -10,8 +10,7 @@ var Song = React.createClass({
 		</div>;
 	},
 	onClick() {
-		actions.changeSong(this.props.song.name);
-		actions.setFile.completed(this.props.song.src);
+		actions.changeSong(this.props.song);
 	}
 });
 

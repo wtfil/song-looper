@@ -1,15 +1,29 @@
 var Reflux = require('reflux');
 var actions = require('./audio-actions');
+var Formula = require('./formula');
 
 module.exports = Reflux.createStore({
 	init() {
 		this.listenToMany(actions);
 		this.listenTo(actions.setFile.completed, this.setAudio);
+		this.listenTo(actions.changeFormula, this.setBreakPoint);
 		this.audio = new Audio();
 		this.duration = 0;
 		this.tempo = 1;
 		this.current = 0;
 		this.isPlay = false;
+		this.setBreakPoint();
+	},
+
+	setBreakPoint(formula) {
+		this.breakPoint = null;
+		if (formula) {
+			this.formula = Formula(formula);
+		}
+		if (this.formula) {
+			this.breakPoint = this.formula.next().value;
+		}
+		this.breakPoint = this.breakPoint || {breakAt: Infinity, seekTo: 0};
 	},
 
 	setAudio(src) {
@@ -20,9 +34,14 @@ module.exports = Reflux.createStore({
 			this.trigger();
 		});
 		this.audio.addEventListener('timeupdate', () => {
-			this.current = this.audio.currentTime;
-			this.isPlay = !this.audio.paused;
-			this.trigger();
+			if (this.audio.currentTime > this.breakPoint.breakAt) {
+				this.seekTo(this.breakPoint.seekTo);
+				this.setBreakPoint();
+			} else {
+				this.current = this.audio.currentTime;
+				this.isPlay = !this.audio.paused;
+				this.trigger();
+			}
 		});
 		this.trigger();
 	},
@@ -32,6 +51,10 @@ module.exports = Reflux.createStore({
 	},
 	onPlay() {
 		this.audio.play();
+	},
+	seekTo(time) {
+		this.current = this.audio.currentTime = time;
+		this.trigger();
 	},
 	onChangeTempo(tempo) {
 		this.tempo = this.audio.playbackRate = tempo;
@@ -58,5 +81,11 @@ module.exports = Reflux.createStore({
 	},
 	onChangePosition(position) {
 		this.audio.currentTime = position;
+	},
+	onChangeSong(song) {
+		this.setBreakPoint(song.formula);
+		this.setAudio(song.src);
+		this.seekTo(this.breakPoint.seekTo);
+		this.audio.play();
 	}
 });

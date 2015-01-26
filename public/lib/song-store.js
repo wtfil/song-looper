@@ -41,17 +41,10 @@ var fluxStore = Reflux.createStore({
 		this.updateCurrentSong('src', src);
 	},
 
-	onChangeSong(name) {
-		var song = this.songs.filter(function (song) {
-			return song.name === name;
-		})[0];
-		if (!song) {
-			throw new Error('can not find song with name "' + name + '"');
-		}
+	onChangeSong(song) {
 		this.currentSong = song;
 		this.trigger();
 	},
-
 
 	onSetFile(file) {
 		this.currentSong = {
