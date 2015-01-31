@@ -1,11 +1,15 @@
 var Reflux = require('reflux');
 var audio = new Audio();
+var repeater = require('./repeater');
+var breakpoint = repeater.end();
 
 var actions = Reflux.createActions({
 	setFile: {
 		children: ['completed']
 	},
-	changeFormula: {},
+	changeFormula: {
+		children: ['valid', 'invalid']
+	},
 	play: {},
 	pause: {},
 	speedUp: {},
@@ -23,6 +27,10 @@ audio.addEventListener('loadedmetadata', () => {
 	actions.changeDuration(audio.duration);
 });
 audio.addEventListener('timeupdate', () => {
+	var time = audio.currentTime;
+	if (time > breakpoint) {
+		return audio.currentTime = repeater.start();
+	}
 	actions.changePosition(audio.currentTime);
 });
 
@@ -69,6 +77,11 @@ actions.setFile.listen(function (file) {
 actions.setFile.completed.listen(function (src) {
 	audio.src = src;
 	actions.play();
+});
+
+actions.changeFormula.listen(function (formula) {
+	breakpoint = repeater(formula).end();
+	var start = repeater.start();
 });
 
 actions.changeSong.listen(function (song) {
