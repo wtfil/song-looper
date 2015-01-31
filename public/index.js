@@ -7,6 +7,29 @@ var PlayerTime = require('./components/player-time');
 var SongsList = require('./components/songs-list');
 var songStore = require('./lib/song-store');
 
+var UpdatableInput = React.createClass({
+	getInitialState() {
+		return {value: this.props.value, initialValue: this.props.value};
+	},
+	componentWillReceiveProps({value}) {
+		if (value !== this.state.initialValue) {
+			this.setState({value: value, initialValue: value});
+		}
+	},
+	onChange(e) {
+		this.setState({value: e.target.value});
+	},
+	onSubmit(e) {
+		e.preventDefault();
+		this.props.onChange && this.props.onChange(this.state.value);
+	},
+	render() {
+		return <form onSubmit={this.onSubmit}>
+			<input className={this.props.className} type="text" value={this.state.value} onChange={this.onChange} />
+		</form>;
+	}
+});
+
 var Player = React.createClass({
 
 	mixins: [Reflux.listenTo(store, 'forceUpdate')],
@@ -19,17 +42,9 @@ var Player = React.createClass({
 		actions.changePosition(position * store.duration);
 	},
 
-	setBreakPoint(position) {
-		actions.setBreakPoint(position * store.duration);
-	},
-
-	changeFormula(e) {
-		actions.changeFormula(e.target.value);
-	},
-
 	render() {
 		return <div className="player">
-			<PlayerTime points={songStore.getBreakPoints()} current={store.current} duration={store.duration} onChange={this.changePosition} onContextClick={this.setBreakPoint}/>
+			<PlayerTime current={store.current} duration={store.duration} onChange={this.changePosition}/>
 			<div className="player__footer">
 				<div className="player__controls">
 					<div className="player__stop"></div>
@@ -40,7 +55,7 @@ var Player = React.createClass({
 					<Progress progress={store.tempo - 0.5} onChange={this.changeTempo}/>
 					<span className="player__tempo">{store.tempo.toFixed(1)}</span>
 				</div>
-				<input type="text" className="player__formula" onChange={this.changeFormula} value={songStore.getFormula()}/>
+				<UpdatableInput className="player__formula" value={songStore.getFormula()} onChange={actions.changeFormula}/>
 			</div>
 		</div>;
 	}

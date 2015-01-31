@@ -5,7 +5,6 @@ var Formula = require('./formula');
 module.exports = Reflux.createStore({
 	init() {
 		this.listenToMany(actions);
-		this.listenTo(actions.changeFormula, this.setBreakPoint);
 		this.duration = 0;
 		this.tempo = 1;
 		this.current = 0;

@@ -5,10 +5,7 @@ var actions = Reflux.createActions({
 	setFile: {
 		children: ['completed']
 	},
-	changeFormula: {
-		children: ['valid', 'invalid']
-	},
-	changeDuration: {},
+	changeFormula: {},
 	play: {},
 	pause: {},
 	speedUp: {},
@@ -17,9 +14,9 @@ var actions = Reflux.createActions({
 	jumpBack: {},
 	changeTempo: {},
 	pausePlay: {},
+	changeDuration: {},
 	changePosition: {},
-	changeSong: {},
-	setBreakPoint: {}
+	changeSong: {}
 });
 
 audio.addEventListener('loadedmetadata', () => {
@@ -72,10 +69,6 @@ actions.setFile.listen(function (file) {
 actions.changeSong.listen(function (song) {
 	audio.src = song.src;
 	actions.play();
-});
-
-actions.changeFormula.listen(function (formula) {
-	this.valid(formula);
 });
 
 module.exports = actions;
