@@ -6,7 +6,8 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "start": "gulp dev"
+    "start": "gulp dev",
+    "test": "find public -name '*js'| grep -v _ | xargs jsxhint"
   },
   "dependencies": {
     "browserify": "^6.1.0",
@@ -19,5 +20,8 @@
     "reactify": "^0.17.1",
     "reflux": "^0.2.3",
     "watchify": "^2.0.0"
+  },
+  "devDependencies": {
+    "jsxhint": "^0.9.0"
   }
 }

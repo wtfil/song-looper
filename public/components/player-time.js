@@ -18,6 +18,6 @@ module.exports = React.createClass({
 			<Progress progress={this.props.current/this.props.duration} onChange={this.props.onChange}/>
 			<div className="time__current">{formatTime(this.props.current)}</div>
 			<div className="time__duration">{formatTime(this.props.duration)}</div>
-		</div>
+		</div>;
 	}
 });

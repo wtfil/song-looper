@@ -1,7 +1,6 @@
 var times = [];
 function repeater(formula) {
 	times = formula.split('-').map(Number).filter(Boolean);
-	index = 0;
 	return repeater;
 }
 

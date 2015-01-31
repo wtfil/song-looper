@@ -28,7 +28,7 @@ module.exports = React.createClass({
 			<div className="songs-list__list">
 				{store.songs.map((song, key) => <Song key={key} song={song}/>)}
 			</div>
-		</div>
+		</div>;
 	},
 	onChange(e) {
 		actions.setFile(e.target.files[0]);

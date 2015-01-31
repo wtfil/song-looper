@@ -29,11 +29,18 @@ audio.addEventListener('loadedmetadata', () => {
 audio.addEventListener('timeupdate', () => {
 	var time = audio.currentTime;
 	if (time > breakpoint) {
-		return audio.currentTime = repeater.start();
+		audio.currentTime = repeater.start();
+	} else {
+		actions.changePosition(audio.currentTime);
 	}
-	actions.changePosition(audio.currentTime);
 });
 
+
+actions.changePosition.listen(function (position) {
+	if (audio.currentTime !== position) {
+		audio.currentTime = position;
+	}
+});
 actions.speedUp.listen(function () {
 	actions.changeTempo(audio.playbackRate += 0.1);
 });
@@ -81,7 +88,7 @@ actions.setFile.completed.listen(function (src) {
 
 actions.changeFormula.listen(function (formula) {
 	breakpoint = repeater(formula).end();
-	var start = repeater.start();
+	audio.currentTime = repeater.start();
 });
 
 actions.changeSong.listen(function (song) {
