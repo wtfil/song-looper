@@ -57,6 +57,10 @@ var App = React.createClass({
 });
 
 window.addEventListener('keyup', function (e) {
+	var node = e.target.nodeName;
+	if (node === 'INPUT') {
+		return;
+	}
 	switch (e.keyCode) {
 		case 32: actions.pausePlay(); break;
 		case 38: actions.speedUp(); break;
