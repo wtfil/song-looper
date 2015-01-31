@@ -45,7 +45,6 @@ module.exports = Reflux.createStore({
 	},
 	*/
 
-
    	onChangeDuration(duration) {
    		this.duration = duration;
    		this.trigger();

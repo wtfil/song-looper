@@ -1,3 +1,6 @@
+@desktop:   ~"only screen and (min-width: 540px) and (max-width: 1199px)";
+@mobile:    ~"only screen and (max-width: 540px)";
+
 @bg-contrast: #ff9a5c;
 @bg-dark: #5a5a5a;
 @border-color: #aaa;
@@ -69,10 +72,18 @@ html, body {
 		font-size: 24px;
 		margin-left: 50px;
 		color: @font-color;
+		-webkit-appearance: none;
+		border-radius: 0;
+		border: 1px solid @bg-dark;
 		&:active,
 		&:focus {
-			border: 2px solid @bg-contrast;
+			border: 1px solid @bg-contrast;
 			outline: 0;
+		}
+		@media @mobile {
+			margin-left: 0;
+			width: 100%;
+			box-sizing: border-box;
 		}
 	}
 	&__controls .progress {

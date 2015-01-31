@@ -66,6 +66,11 @@ actions.setFile.listen(function (file) {
 	reader.readAsDataURL(file);
 });
 
+actions.setFile.completed.listen(function (src) {
+	audio.src = src;
+	actions.play();
+});
+
 actions.changeSong.listen(function (song) {
 	audio.src = song.src;
 	actions.play();
