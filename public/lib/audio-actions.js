@@ -13,6 +13,7 @@ var actions = Reflux.createActions({
 	changePosition: {
 		children: ['completed']
 	},
+	changeName: {},
 	play: {},
 	pause: {},
 	speedUp: {},

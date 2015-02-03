@@ -6,29 +6,7 @@ var Progress = require('./components/progress');
 var PlayerTime = require('./components/player-time');
 var SongsList = require('./components/songs-list');
 var songStore = require('./lib/song-store');
-
-var UpdatableInput = React.createClass({
-	getInitialState() {
-		return {value: this.props.value, initialValue: this.props.value};
-	},
-	componentWillReceiveProps({value}) {
-		if (value !== this.state.initialValue) {
-			this.setState({value: value, initialValue: value});
-		}
-	},
-	onChange(e) {
-		this.setState({value: e.target.value});
-	},
-	onSubmit(e) {
-		e.preventDefault();
-		this.props.onChange && this.props.onChange(this.state.value);
-	},
-	render() {
-		return <form onSubmit={this.onSubmit}>
-			<input className={this.props.className} placeholder={this.props.placeholder} type="text" value={this.state.value} onChange={this.onChange} />
-		</form>;
-	}
-});
+var UpdatableInput = require('./components/updatable-input');
 
 var Player = React.createClass({
 

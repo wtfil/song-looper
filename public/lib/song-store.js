@@ -18,6 +18,13 @@ var fluxStore = Reflux.createStore({
 		this.songs = [];
 	},
 
+	onChangeName(data) {
+		var song = this.songs.filter(song => song.name === data.from)[0];
+		song.name = data.to;
+		dbStore.put(data.from, song);
+		this.trigger();
+	},
+
 	updateCurrentSong(key, value) {
 		var song = this.currentSong;
 		if (!song) {

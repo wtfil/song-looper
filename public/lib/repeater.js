@@ -1,6 +1,8 @@
 var times = [];
 function repeater(formula) {
-	times = formula.split('-').map(Number).filter(Number.isFinite);
+	times = formula ?
+		formula.split('-').map(Number).filter(Number.isFinite) :
+		[];
 	return repeater;
 }
 

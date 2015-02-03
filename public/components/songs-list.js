@@ -2,12 +2,37 @@ var React = require('react');
 var Reflux = require('reflux');
 var store= require('../lib/song-store');
 var actions = require('../lib/audio-actions');
+var UpdatableInput = require('../components/updatable-input');
 
 var Song = React.createClass({
+	getInitialState() {
+		return {
+			editable: false,
+			name: this.props.song.name
+		};
+	},
 	render() {
-		return <div className="song-item" onClick={this.onClick}>
-			{this.props.song.name}
+		return <div className="song-item">
+			{this.state.editable ?
+				<UpdatableInput className="song-item__input" value={this.state.name} onChange={this.updateName}/> :
+				<span className="song-item__name" onClick={this.onClick}>{this.state.name}</span>
+			}
+			<span className="song-item__edit" onClick={this.setEditable}>edit</span>
 		</div>;
+	},
+	updateName(name) {
+		actions.changeName({
+			from: this.props.song.name,
+			to: name
+		});
+		this.setState({
+			editable: false,
+			name: name
+		});
+	},
+	setEditable(e) {
+		e.stopPropagation();
+		this.setState({editable: true});
 	},
 	onClick() {
 		actions.changeSong(this.props.song);
