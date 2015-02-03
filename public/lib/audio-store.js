@@ -4,6 +4,7 @@ var actions = require('./audio-actions');
 module.exports = Reflux.createStore({
 	init() {
 		this.listenToMany(actions);
+		this.listenTo(actions.changePosition.completed, 'onChangePositionCompleted');
 		this.duration = 0;
 		this.tempo = 1;
 		this.current = 0;
@@ -15,7 +16,7 @@ module.exports = Reflux.createStore({
    		this.trigger();
    	},
 
-   	onChangePosition(current) {
+   	onChangePositionCompleted(current) {
    		this.current = current;
    		this.trigger();
    	},

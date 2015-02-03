@@ -10,6 +10,9 @@ var actions = Reflux.createActions({
 	changeFormula: {
 		children: ['valid', 'invalid']
 	},
+	changePosition: {
+		children: ['completed']
+	},
 	play: {},
 	pause: {},
 	speedUp: {},
@@ -19,7 +22,6 @@ var actions = Reflux.createActions({
 	changeTempo: {},
 	pausePlay: {},
 	changeDuration: {},
-	changePosition: {},
 	changeSong: {}
 });
 
@@ -31,15 +33,14 @@ audio.addEventListener('timeupdate', () => {
 	if (time > breakpoint) {
 		audio.currentTime = repeater.start();
 	} else {
-		actions.changePosition(audio.currentTime);
+		actions.changePosition.completed(audio.currentTime);
 	}
 });
 
 
 actions.changePosition.listen(function (position) {
-	if (audio.currentTime !== position) {
-		audio.currentTime = position;
-	}
+	audio.currentTime = position;
+	this.completed(position);
 });
 actions.speedUp.listen(function () {
 	actions.changeTempo(audio.playbackRate += 0.1);
@@ -86,13 +87,16 @@ actions.setFile.completed.listen(function (src) {
 	actions.play();
 });
 
-actions.changeFormula.listen(function (formula) {
+function updateFormula(formula) {
 	breakpoint = repeater(formula).end();
 	audio.currentTime = repeater.start();
-});
+}
+
+actions.changeFormula.listen(updateFormula);
 
 actions.changeSong.listen(function (song) {
 	audio.src = song.src;
+	updateFormula(song.formula);
 	actions.play();
 });
 

@@ -25,7 +25,7 @@ var UpdatableInput = React.createClass({
 	},
 	render() {
 		return <form onSubmit={this.onSubmit}>
-			<input className={this.props.className} type="text" value={this.state.value} onChange={this.onChange} />
+			<input className={this.props.className} placeholder={this.props.placeholder} type="text" value={this.state.value} onChange={this.onChange} />
 		</form>;
 	}
 });
@@ -55,7 +55,7 @@ var Player = React.createClass({
 					<Progress progress={store.tempo - 0.5} onChange={this.changeTempo}/>
 					<span className="player__tempo">{store.tempo.toFixed(1)}</span>
 				</div>
-				<UpdatableInput className="player__formula" value={songStore.getFormula()} onChange={actions.changeFormula}/>
+				<UpdatableInput className="player__formula" placeholder="type time range (ex: 7-8)" value={songStore.getFormula()} onChange={actions.changeFormula}/>
 			</div>
 		</div>;
 	}
