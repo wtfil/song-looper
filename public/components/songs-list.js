@@ -17,8 +17,12 @@ var Song = React.createClass({
 				<UpdatableInput className="song-item__input" value={this.state.name} onChange={this.updateName}/> :
 				<span className="song-item__name" onClick={this.onClick}>{this.state.name}</span>
 			}
+			<span className="song-item__delete" onClick={this.deleteItem}>+</span>
 			<span className="song-item__edit" onClick={this.setEditable}>edit</span>
 		</div>;
+	},
+	deleteItem() {
+		actions.deleteSong(this.props.song.id);
 	},
 	updateName(name) {
 		actions.changeName({

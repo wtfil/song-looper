@@ -7,7 +7,7 @@ var dbStore = new IDb({
 	autoIncrement: true,
 	storeName: 'songs',
 	onStoreReady: function () {
-		dbStore.getAll(fluxStore.setSongs);
+		fluxStore.updateFromDb();
 	},
 	onError: console.error.bind(console)
 });
@@ -17,6 +17,14 @@ var fluxStore = Reflux.createStore({
 		this.listenTo(actions.setFile.completed, 'onUrlCreated');
 		this.listenToMany(actions);
 		this.songs = [];
+	},
+
+	updateFromDb() {
+		dbStore.getAll(this.setSongs);
+	},
+
+	onDeleteSong(id) {
+		dbStore.remove(id, this.updateFromDb);
 	},
 
 	onChangeName(data) {
@@ -53,8 +61,11 @@ var fluxStore = Reflux.createStore({
 	},
 
 	onSetFile(file) {
-		var song = {name: file.name};
-		dbStore.put(song, dbStore.getAll.bind(dbStore, this.setSongs));
+		var song = {
+			name: file.name,
+			sections: []
+		};
+		dbStore.put(song, this.updateFromDb);
 	},
 
 	setSongs(songs) {
