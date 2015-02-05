@@ -55,7 +55,7 @@ module.exports = React.createClass({
 				</label>
 			</div>
 			<div className="songs-list__list">
-				{store.songs.map((song, key) => <Song key={key} song={song}/>)}
+				{store.songs.map((song, key) => <Song key={song.id} song={song}/>)}
 			</div>
 		</div>;
 	},
