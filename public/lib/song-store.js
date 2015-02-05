@@ -3,7 +3,8 @@ var actions = require('./audio-actions');
 var IDb =  require('idb-wrapper');
 
 var dbStore = new IDb({
-	keyPath: null,
+	keyPath: 'id',
+	autoIncrement: true,
 	storeName: 'songs',
 	onStoreReady: function () {
 		dbStore.getAll(fluxStore.setSongs);
@@ -19,9 +20,12 @@ var fluxStore = Reflux.createStore({
 	},
 
 	onChangeName(data) {
-		var song = this.songs.filter(song => song.name === data.from)[0];
-		song.name = data.to;
-		dbStore.put(data.from, song);
+		var song = this.songs.filter(song => song.id === data.id)[0];
+		if (!song) {
+			return;
+		}
+		song.name = data.name;
+		dbStore.put(song);
 		this.trigger();
 	},
 
@@ -32,7 +36,7 @@ var fluxStore = Reflux.createStore({
 		}
 		song[key] = value;
 		this.trigger();
-		dbStore.put(song.name, song);
+		dbStore.put(song);
 	},
 
 	onChangeFormula(formula) {
@@ -49,16 +53,13 @@ var fluxStore = Reflux.createStore({
 	},
 
 	onSetFile(file) {
-		this.currentSong = {
-			name: file.name
-		};
-		dbStore.put(file.name, this.currentSong);
-		this.songs.push(this.currentSong);
-		this.trigger();
+		var song = {name: file.name};
+		dbStore.put(song, dbStore.getAll.bind(dbStore, this.setSongs));
 	},
 
 	setSongs(songs) {
 		this.songs = songs;
+		this.currentSong = songs.slice().pop();
 		this.trigger();
 	},
 

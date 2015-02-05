@@ -22,8 +22,8 @@ var Song = React.createClass({
 	},
 	updateName(name) {
 		actions.changeName({
-			from: this.props.song.name,
-			to: name
+			id: this.props.song.id,
+			name: name
 		});
 		this.setState({
 			editable: false,
