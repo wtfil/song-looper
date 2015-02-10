@@ -13,6 +13,8 @@ var actions = Reflux.createActions({
 	changePosition: {
 		children: ['completed']
 	},
+	addRiff: {},
+	updateRiff: {},
 	deleteSong: {},
 	changeName: {},
 	play: {},
@@ -38,7 +40,6 @@ audio.addEventListener('timeupdate', () => {
 		actions.changePosition.completed(audio.currentTime);
 	}
 });
-
 
 actions.changePosition.listen(function (position) {
 	audio.currentTime = position;

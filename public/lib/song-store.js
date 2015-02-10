@@ -26,16 +26,6 @@ var fluxStore = Reflux.createStore({
 		dbStore.remove(id, this.updateFromDb);
 	},
 
-	onChangeName(data) {
-		var song = this.songs.filter(song => song.id === data.id)[0];
-		if (!song) {
-			return;
-		}
-		song.name = data.name;
-		dbStore.put(data.id, song);
-		this.trigger();
-	},
-
 	updateCurrentSong(key, value) {
 		var song = this.currentSong;
 		if (!song) {
@@ -46,12 +36,51 @@ var fluxStore = Reflux.createStore({
 		dbStore.put(song.id, song);
 	},
 
+	updateById(id, key, value) {
+		var song = this.getById(id);
+		if (!song) {
+			return;
+		}
+		song[key] = value;
+		dbStore.put(id, song);
+		this.trigger();
+	},
+
+	getById(id) {
+		return this.songs.filter(song => song.id === id)[0];
+	},
+
+	onChangeName(data) {
+		this.updateById(data.id, 'name', data.name);
+	},
+
 	onChangeFormula(formula) {
 		this.updateCurrentSong('formula', formula);
 	},
 
 	onUrlCreated(src) {
 		this.updateCurrentSong('src', src);
+	},
+
+	onAddRiff(id) {
+		var riff = {
+			name: '',
+			formula: ''
+		};
+		var riffs = this.getById(id).riffs;
+		this.updateById(id, 'riffs', riffs.concat(riff));
+	},
+
+	onUpdateRiff(data) {
+		var riffs = this.getById(data.songId).riffs;
+		// TODO extend
+		if (data.name) {
+			riffs[data.index].name = data.name;
+		}
+		if (data.formula) {
+			riffs[data.index].formula = data.formula;
+		}
+		this.updateById(data.songId, 'riffs', riffs);
 	},
 
 	onChangeSong(song) {
@@ -67,7 +96,7 @@ var fluxStore = Reflux.createStore({
 		var song = {
 			name: file.name,
 			id: id,
-			sections: []
+			riffs: []
 		};
 		this.songs.push(song);
 		this.currentSong = song;
