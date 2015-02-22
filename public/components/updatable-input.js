@@ -13,6 +13,11 @@ module.exports = React.createClass({
 	onChange(e) {
 		this.setState({value: e.target.value});
 	},
+	onBlur(e) {
+		this.setState({value: e.target.value}, () => {
+			this.props.onChange && this.props.onChange(this.state.value);
+		});
+	},
 	onKeyUp(e) {
 		if (e.keyCode === 13 && this.props.onChange) {
 			this.props.onChange(this.state.value);
@@ -25,6 +30,7 @@ module.exports = React.createClass({
 			type="text"
 			value={this.state.value}
 			onChange={this.onChange}
+			onBlur={this.onBlur}
 			onKeyUp={this.onKeyUp}
 		/>;
 	}

@@ -47,15 +47,14 @@ var Song = React.createClass({
 				<div className="song-item__options">
 					<UpdatableInput className="song-item__input" value={this.state.name} onChange={this.updateName}/>
 					<div className="song-item__riffs">
-						<div>
-							<span>riffs</span>
-							<i className="song-item__add" onClick={this.addRiff}>+</i>
-						</div>
-						{this.props.song.riffs.map((riff, index) => <Riff riff={riff} key={index} index={index} songId={this.props.song.id}/>)}
+						<span className="secondary-text">Riffs</span>
+						<div className="song-item__add" onClick={this.addRiff}>+</div>
 					</div>
+					{this.props.song.riffs.map((riff, index) => <Riff riff={riff} key={index} index={index} songId={this.props.song.id}/>)}
+					<button className="song-item__save" onClick={this.save}>Save</button>
 				</div> : <div>
-					<span className="song-item__delete" onClick={this.deleteItem}>+</span>
-					<span className="song-item__edit" onClick={this.setEditable}>edit</span>
+					<span className="song-item__delete secondary-text" onClick={this.deleteItem}>+</span>
+					<span className="song-item__edit secondary-text" onClick={this.setEditable}>edit</span>
 					<span className="song-item__name" onClick={this.onClick}>{this.state.name}</span>
 				</div>
 			}
@@ -81,6 +80,10 @@ var Song = React.createClass({
 	setEditable(e) {
 		e.stopPropagation();
 		this.setState({editable: true});
+	},
+	save(e) {
+		e.stopPropagation();
+		this.setState({editable: false});
 	},
 	onClick() {
 		actions.changeSong(this.props.song);
