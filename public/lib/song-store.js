@@ -54,10 +54,6 @@ var fluxStore = Reflux.createStore({
 		this.updateById(data.id, 'name', data.name);
 	},
 
-	onChangeFormula(formula) {
-		this.updateCurrentSong('formula', formula);
-	},
-
 	onUrlCreated(src) {
 		this.updateCurrentSong('src', src);
 	},
@@ -107,11 +103,8 @@ var fluxStore = Reflux.createStore({
 	setSongs(songs) {
 		this.songs = songs;
 		this.trigger();
-	},
-
-	getFormula() {
-		return this.currentSong && this.currentSong.formula || '';
 	}
+
 });
 
 module.exports = fluxStore;

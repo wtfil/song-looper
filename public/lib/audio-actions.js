@@ -100,7 +100,6 @@ actions.changeFormula.listen(updateFormula);
 
 actions.changeSong.listen(function (song) {
 	audio.src = song.src;
-	updateFormula(song.formula);
 	actions.play();
 });
 actions.playRiff.listen(function (data) {

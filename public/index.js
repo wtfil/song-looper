@@ -33,7 +33,6 @@ var Player = React.createClass({
 					<Progress progress={store.tempo - 0.5} onChange={this.changeTempo}/>
 					<span className="player__tempo">{store.tempo.toFixed(1)}</span>
 				</div>
-				<UpdatableInput className="player__formula" placeholder="type time range (ex: 7-8)" value={songStore.getFormula()} onChange={actions.changeFormula}/>
 			</div>
 		</div>;
 	}
