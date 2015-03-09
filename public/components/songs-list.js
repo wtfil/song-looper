@@ -9,19 +9,26 @@ var Riff = React.createClass({
 	updateName(name) {
 		actions.updateRiff({
 			index: this.props.index,
-			songId: this.props.songId,
+			songId: this.props.song.id,
 			name: name
 		});
 	},
 	updateFormula(formula) {
 		actions.updateRiff({
 			index: this.props.index,
-			songId: this.props.songId,
+			songId: this.props.song.id,
 			formula: formula
+		});
+	},
+	playRiff() {
+		actions.playRiff({
+			song: this.props.song,
+			index: this.props.index
 		});
 	},
 	render() {
 		return <div className="riff">
+			<i className="icon-play" onClick={this.playRiff}/>
 			<UpdatableInput className="riff__formula" placeholder="time interval" onChange={this.updateFormula} value={this.props.riff.formula}/>
 			<div className="riff__name">
 				<UpdatableInput onChange={this.updateName} placeholder="riff name" value={this.props.riff.name}/>
@@ -51,9 +58,9 @@ var Song = React.createClass({
 						<div className="song-item__add" onClick={this.addRiff}>+</div>
 						<i className="icon-collapse mr right" onClick={this.save}/>
 					</div>
-					{this.props.song.riffs.map((riff, index) => <Riff riff={riff} key={index} index={index} songId={this.props.song.id}/>)}
+					{this.props.song.riffs.map((riff, index) => <Riff riff={riff} key={index} index={index} song={this.props.song}/>)}
 				</div> : <div>
-					<span className="song-item__name">{this.state.name}</span>
+					<span className="song-item__name" onClick={this.changeSong}>{this.state.name}</span>
 					<span className="right">
 						<i className="icon-edit" onClick={this.setEditable} />
 						<i className="icon-delete" onClick={this.deleteItem} />
@@ -87,7 +94,7 @@ var Song = React.createClass({
 		e.stopPropagation();
 		this.setState({editable: false});
 	},
-	onClick() {
+	changeSong() {
 		actions.changeSong(this.props.song);
 	}
 });

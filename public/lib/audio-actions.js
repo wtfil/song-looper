@@ -26,7 +26,8 @@ var actions = Reflux.createActions({
 	changeTempo: {},
 	pausePlay: {},
 	changeDuration: {},
-	changeSong: {}
+	changeSong: {},
+	playRiff: {}
 });
 
 audio.addEventListener('loadedmetadata', () => {
@@ -100,6 +101,11 @@ actions.changeFormula.listen(updateFormula);
 actions.changeSong.listen(function (song) {
 	audio.src = song.src;
 	updateFormula(song.formula);
+	actions.play();
+});
+actions.playRiff.listen(function (data) {
+	audio.src = data.song.src;
+	updateFormula(data.song.riffs[data.index].formula);
 	actions.play();
 });
 

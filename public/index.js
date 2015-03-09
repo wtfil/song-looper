@@ -27,8 +27,8 @@ var Player = React.createClass({
 				<div className="player__controls">
 					<div className="player__stop"></div>
 					{store.isPlay ?
-						<div className="player__pause" onClick={actions.pause}></div> :
-						<div className="player__play" onClick={actions.play}></div>
+						<i className="icon-pause" onClick={actions.pause}/> :
+						<i className="icon-play" onClick={actions.play} />
 					}
 					<Progress progress={store.tempo - 0.5} onChange={this.changeTempo}/>
 					<span className="player__tempo">{store.tempo.toFixed(1)}</span>
