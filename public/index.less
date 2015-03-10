@@ -3,6 +3,7 @@
 
 @bg-contrast: #ff9a5c;
 @bg-dark: #5a5a5a;
+@bg-light: #f2f2f2;
 @border-color: #aaa;
 @font-color: #3f3f3f;
 @secondary-text: #707070;
@@ -93,23 +94,9 @@ button {
 	padding: 10px 20px;
 	border-top: 1px solid #d9d9d9;
 	overflow: hidden;
-	&.editable {
-		padding: 4px 14px;
-	}
 
-	&__add {
-		@size: 18px;
-		width: @size;
-		height: @size;
-		line-height: @size;
-		text-align: center;
-		margin-left: 5px;
-		font-size: 20px;
-		display: inline-block;
-		background: @bg-contrast;
-		color: white;
-		border-radius: 3px;
-		cursor: pointer;
+	&:not(.editable):hover {
+		background: @bg-light;
 	}
 
 	&__input {
@@ -316,12 +303,17 @@ button {
 		}
 	}
 	&-collapse {
+		cursor: pointer;
 		width: @size / 3;
 		height: @size / 3;
 		display: inline-block;
 		border: solid @bg-contrast;
 		border-width: 2px 0 0 2px;
-		transform: rotate(45deg);
+		transform: rotate(225deg);
+		transition: transform .2s linear;
+		&.off {
+			transform: rotate(45deg);
+		}
 	}
 
 	&-play {
@@ -336,7 +328,7 @@ button {
 			top: @padding;
 			position: absolute;
 			content: '';
-			border-left: @size - @padding*2 solid @bg-dark;
+			border-left: @size - @padding*4 solid @bg-dark;
 			border-top: @size*.5 - @padding  solid transparent;
 			border-bottom: @size*.5 - @padding solid transparent;
 		}
@@ -367,5 +359,19 @@ button {
 			background: @bg-dark;
 		}
 	}
+
+	&-add {
+		width: @size;
+		height: @size;
+		line-height: @size;
+		text-align: center;
+		font-size: 20px;
+		display: inline-block;
+		background: @bg-contrast;
+		color: white;
+		border-radius: 3px;
+		cursor: pointer;
+	}
+
 
 }

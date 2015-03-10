@@ -45,28 +45,19 @@ var Song = React.createClass({
 		};
 	},
 	render() {
-		var className = 'song-item';
-		if (this.state.editable) {
-			className += ' editable';
-		}
-		return <div className={className}>
+		return <div className={'song-item ' + (this.state.editable && 'editable' || '')}>
+			<span onClick={this.changeSong}>{this.state.name}</span>
 			{this.state.editable ?
-				<div className="song-item__options">
-					<UpdatableInput className="song-item__input" value={this.state.name} onChange={this.updateName}/>
-					<div className="song-item__riffs">
-						<span className="secondary-text">Riffs</span>
-						<div className="song-item__add" onClick={this.addRiff}>+</div>
-						<i className="icon-collapse mr right" onClick={this.save}/>
-					</div>
-					{this.props.song.riffs.map((riff, index) => <Riff riff={riff} key={index} index={index} song={this.props.song}/>)}
-				</div> : <div>
-					<span className="song-item__name" onClick={this.changeSong}>{this.state.name}</span>
-					<span className="right">
-						<i className="icon-edit" onClick={this.setEditable} />
-						<i className="icon-delete" onClick={this.deleteItem} />
-					</span>
-				</div>
+				<i className="mr icon-collapse off right" onClick={this.save}/> :
+				<i className="mr icon-collapse right" onClick={this.setEditable}/>
 			}
+			{this.state.editable && <div>
+				<div className="song-item__riffs">
+					<i className="icon-add" onClick={this.addRiff}>+</i>
+				</div>
+				{this.props.song.riffs.map((riff, index) => <Riff riff={riff} key={index} index={index} song={this.props.song}/>)}
+				<span onClick={this.deleteItem}>Delete song</span>
+			</div>}
 		</div>;
 	},
 

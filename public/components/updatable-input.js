@@ -25,6 +25,7 @@ module.exports = React.createClass({
 	},
 	render() {
 		return <input
+			autoFocus={this.props.autoFocus}
 			className={this.props.className}
 			placeholder={this.props.placeholder}
 			type="text"
