@@ -3,6 +3,7 @@ var Reflux = require('reflux');
 var store= require('../lib/song-store');
 var actions = require('../lib/audio-actions');
 var UpdatableInput = require('../components/updatable-input');
+var formatTime = require('../lib/format-time');
 
 var Riff = React.createClass({
 	displayName: 'Riff',
@@ -37,6 +38,49 @@ var Riff = React.createClass({
 	}
 });
 
+var Riffs = React.createClass({
+	render() {
+		if (!this.props.riffs.length) {
+			return <div>
+				<div className="secondary-text">There is not sections yet</div>
+				<span className="call-to-action" onClick={this.addRiff}>Add section</span>
+			</div>;
+		}
+		return <table className="riffs">
+			<tr>
+				<td onClick={this.addRiff}>+</td>
+				<td className="riffs__long">
+					<strong>NAME</strong>
+				</td>
+				<td>
+					<strong>FROM</strong>
+				</td>
+				<td>
+					<strong>TO</strong>
+				</td>
+			</tr>
+			{this.props.riffs.map((riff, index) => {
+				return <tr>
+					<td className="riffs__index">
+						<span >{index}</span>
+						<i className="icon-play"></i>
+					</td>
+					{riff.name ?
+						<td>{riff.name}</td> :
+						<td className="secondary-text">unnamed section</td>
+					}
+					<td>{formatTime(riff.from)}s</td>
+					<td>{formatTime(riff.to)}s</td>
+				</tr>;
+			})}
+		</table>;
+	},
+
+	addRiff() {
+		actions.addRiff(this.props.song.id);
+	}
+});
+
 var Song = React.createClass({
 	getInitialState() {
 		return {
@@ -51,19 +95,12 @@ var Song = React.createClass({
 				<i className="mr icon-collapse off right" onClick={this.save}/> :
 				<i className="mr icon-collapse right" onClick={this.setEditable}/>
 			}
-			{this.state.editable && <div>
-				<div className="song-item__riffs">
-					<i className="icon-add" onClick={this.addRiff}>+</i>
-				</div>
-				{this.props.song.riffs.map((riff, index) => <Riff riff={riff} key={index} index={index} song={this.props.song}/>)}
-				<span onClick={this.deleteItem}>Delete song</span>
+			{this.state.editable && <div className="song-item__options">
+				<Riffs riffs={this.props.song.riffs} song={this.props.song} />
 			</div>}
 		</div>;
 	},
 
-	addRiff() {
-		actions.addRiff(this.props.song.id);
-	},
 	deleteItem() {
 		actions.deleteSong(this.props.song.id);
 	},

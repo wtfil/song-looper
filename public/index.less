@@ -6,7 +6,7 @@
 @bg-light: #f2f2f2;
 @border-color: #aaa;
 @font-color: #3f3f3f;
-@secondary-text: #707070;
+@secondary-text: #999;
 @font-family: Roboto, arial, sans-serif;
 
 html, body {
@@ -58,6 +58,10 @@ button {
 	color: @secondary-text;
 }
 
+.call-to-action:hover {
+	text-decoration: underline;
+}
+
 .right { float: right}
 .left { float: left}
 .mr { margin-right: 5px; }
@@ -102,15 +106,16 @@ button {
 	&__input {
 		width: 100%;
 	}
+	&__options {
+		margin-top: 14px;
+	}
+
 	&__name {
 		float: left;
 		line-height: 2;
 		&:hover {
 			text-decoration: underline;
 		}
-	}
-	&__riffs {
-		margin: 10px 0 5px 0;
 	}
 	&__save {
 		margin-top: 5px;
@@ -259,6 +264,33 @@ button {
 	}
 }
 
+.riffs {
+	width: 100%;
+	& td {
+		height: 25px;
+		padding: 3px 6px;
+	}
+	&__long {
+		width: 100%;
+	}
+	&__index {
+		min-width: 25px;
+		& .icon-play {
+			transform: scale(0.6);
+			margin-left: -2px;
+			display: none;
+		}
+	}
+	& tr:hover &__index {
+		& .icon-play {
+			display: block;
+		}
+		& span {
+			display: none;
+		}
+	}
+}
+
 .file-input {
 	font-size: 24px;
 	cursor: pointer;
@@ -276,6 +308,8 @@ button {
 		height: @size;
 		text-align: center;
 		display: inline-block;
+		cursor: pointer;
+
 		&:after {
 			font-style: normal;
 			font-size: @size;
@@ -284,7 +318,6 @@ button {
 		&:hover {
 			opacity: 0.8;
 		}
-		cursor: pointer;
 	}
 
 	&-edit {
@@ -304,34 +337,31 @@ button {
 	}
 	&-collapse {
 		cursor: pointer;
+		 -webkit-user-select: none;
 		width: @size / 3;
 		height: @size / 3;
 		display: inline-block;
 		border: solid @bg-contrast;
-		border-width: 2px 0 0 2px;
+		border-width: 3px 0 0 3px;
 		transform: rotate(225deg);
-		transition: transform .2s linear;
+		margin-top: -2px;
+		transition: all .2s linear;
 		&.off {
+			margin-top: 2px;
 			transform: rotate(45deg);
 		}
 	}
 
 	&-play {
 		display: inline-block;
-		cursor: pointer;
-		width: @size;
-		height: @size;
-		box-sizing: border-box;
 		position: relative;
-		&:after {
-			left: @padding;
-			top: @padding;
-			position: absolute;
-			content: '';
-			border-left: @size - @padding*4 solid @bg-dark;
-			border-top: @size*.5 - @padding  solid transparent;
-			border-bottom: @size*.5 - @padding solid transparent;
-		}
+		cursor: pointer;
+		width: 0;
+		height: 0;
+
+		border-left: @size - @padding*4 solid @bg-dark;
+		border-top: @size*.5 - @padding  solid transparent;
+		border-bottom: @size*.5 - @padding solid transparent;
 	}
 
 	&-pause {

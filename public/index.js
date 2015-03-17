@@ -25,7 +25,6 @@ var Player = React.createClass({
 			<PlayerTime current={store.current} duration={store.duration} onChange={this.changePosition}/>
 			<div className="player__footer">
 				<div className="player__controls">
-					<div className="player__stop"></div>
 					{store.isPlay ?
 						<i className="icon-pause" onClick={actions.pause}/> :
 						<i className="icon-play" onClick={actions.play} />

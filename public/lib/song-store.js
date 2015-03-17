@@ -1,6 +1,7 @@
 var Reflux = require('reflux');
 var actions = require('./audio-actions');
 var IDb =  require('idb-wrapper');
+var extend = require('extend');
 
 var dbStore = new IDb({
 	keyPath: null,
@@ -61,7 +62,8 @@ var fluxStore = Reflux.createStore({
 	onAddRiff(id) {
 		var riff = {
 			name: '',
-			formula: ''
+			from: 0,
+			to: 0
 		};
 		var riffs = this.getById(id).riffs;
 		this.updateById(id, 'riffs', riffs.concat(riff));
@@ -69,13 +71,7 @@ var fluxStore = Reflux.createStore({
 
 	onUpdateRiff(data) {
 		var riffs = this.getById(data.songId).riffs;
-		// TODO extend
-		if (data.name) {
-			riffs[data.index].name = data.name;
-		}
-		if (data.formula) {
-			riffs[data.index].formula = data.formula;
-		}
+		extend(riffs[data.index], data);
 		this.updateById(data.songId, 'riffs', riffs);
 	},
 
