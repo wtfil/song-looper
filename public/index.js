@@ -5,8 +5,6 @@ var store = require('./lib/audio-store');
 var Progress = require('./components/progress');
 var PlayerTime = require('./components/player-time');
 var SongsList = require('./components/songs-list');
-var songStore = require('./lib/song-store');
-var UpdatableInput = require('./components/updatable-input');
 
 var Player = React.createClass({
 

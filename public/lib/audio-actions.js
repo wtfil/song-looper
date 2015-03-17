@@ -1,14 +1,10 @@
 var Reflux = require('reflux');
 var audio = new Audio();
-var repeater = require('./repeater');
-var breakpoint = repeater.end();
+var currentRiff;
 
 var actions = Reflux.createActions({
 	setFile: {
 		children: ['completed']
-	},
-	changeFormula: {
-		children: ['valid', 'invalid']
 	},
 	changePosition: {
 		children: ['completed']
@@ -35,8 +31,8 @@ audio.addEventListener('loadedmetadata', () => {
 });
 audio.addEventListener('timeupdate', () => {
 	var time = audio.currentTime;
-	if (time > breakpoint) {
-		audio.currentTime = repeater.start();
+	if (currentRiff && time > currentRiff.to) {
+		audio.currentTime = currentRiff.from;
 	} else {
 		actions.changePosition.completed(audio.currentTime);
 	}
@@ -91,20 +87,21 @@ actions.setFile.completed.listen(function (src) {
 	actions.play();
 });
 
-function updateFormula(formula) {
-	breakpoint = repeater(formula).end();
-	audio.currentTime = repeater.start();
+function updateRiff(riff) {
+	currentRiff = riff;
+	if (riff) {
+		audio.currentTime = riff.from;
+	}
 }
-
-actions.changeFormula.listen(updateFormula);
 
 actions.changeSong.listen(function (song) {
 	audio.src = song.src;
+	currentRiff = null;
 	actions.play();
 });
 actions.playRiff.listen(function (data) {
 	audio.src = data.song.src;
-	updateFormula(data.song.riffs[data.index].formula);
+	updateRiff(data.riff);
 	actions.play();
 });
 

@@ -60,12 +60,13 @@ var fluxStore = Reflux.createStore({
 	},
 
 	onAddRiff(id) {
+		var riffs = this.getById(id).riffs;
 		var riff = {
 			name: '',
 			from: 0,
-			to: 0
+			to: 0,
+			index: riffs.length
 		};
-		var riffs = this.getById(id).riffs;
 		this.updateById(id, 'riffs', riffs.concat(riff));
 	},
 

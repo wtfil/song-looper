@@ -2,39 +2,30 @@ var React = require('react');
 var Reflux = require('reflux');
 var store= require('../lib/song-store');
 var actions = require('../lib/audio-actions');
-var UpdatableInput = require('../components/updatable-input');
 var formatTime = require('../lib/format-time');
 
 var Riff = React.createClass({
-	displayName: 'Riff',
-	updateName(name) {
-		actions.updateRiff({
-			index: this.props.index,
-			songId: this.props.song.id,
-			name: name
-		});
+	render() {
+		var riff = this.props.riff;
+
+		return <tr onClick={this.playRiff}>
+			<td className="riffs__index">
+				<span >{riff.index + 1}</span>
+				<i className="icon-play"></i>
+			</td>
+			{riff.name ?
+				<td>{riff.name}</td> :
+				<td className="secondary-text">Unnamed section</td>
+			}
+			<td>{formatTime(riff.from)}</td>
+			<td>{formatTime(riff.to)}</td>
+		</tr>;
 	},
-	updateFormula(formula) {
-		actions.updateRiff({
-			index: this.props.index,
-			songId: this.props.song.id,
-			formula: formula
-		});
-	},
-	playRiff() {
+	playRiff(e) {
 		actions.playRiff({
 			song: this.props.song,
-			index: this.props.index
+			riff: this.props.riff
 		});
-	},
-	render() {
-		return <div className="riff">
-			<i className="icon-play" onClick={this.playRiff}/>
-			<UpdatableInput className="riff__formula" placeholder="time interval" onChange={this.updateFormula} value={this.props.riff.formula}/>
-			<div className="riff__name">
-				<UpdatableInput onChange={this.updateName} placeholder="riff name" value={this.props.riff.name}/>
-			</div>
-		</div>;
 	}
 });
 
@@ -49,36 +40,18 @@ var Riffs = React.createClass({
 		return <table className="riffs">
 			<tr>
 				<td onClick={this.addRiff}>+</td>
-				<td className="riffs__long">
-					<strong>NAME</strong>
-				</td>
-				<td>
-					<strong>FROM</strong>
-				</td>
-				<td>
-					<strong>TO</strong>
-				</td>
+				<td className="riffs__long"> <strong>NAME</strong> </td>
+				<td> <strong>FROM</strong> </td>
+				<td> <strong>TO</strong> </td>
 			</tr>
-			{this.props.riffs.map((riff, index) => {
-				return <tr>
-					<td className="riffs__index">
-						<span >{index}</span>
-						<i className="icon-play"></i>
-					</td>
-					{riff.name ?
-						<td>{riff.name}</td> :
-						<td className="secondary-text">unnamed section</td>
-					}
-					<td>{formatTime(riff.from)}s</td>
-					<td>{formatTime(riff.to)}s</td>
-				</tr>;
-			})}
+			{this.props.riffs.map(riff => <Riff riff={riff} song={this.props.song}/>)}
 		</table>;
 	},
 
 	addRiff() {
 		actions.addRiff(this.props.song.id);
 	}
+
 });
 
 var Song = React.createClass({
