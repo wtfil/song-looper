@@ -19,6 +19,7 @@ var Riff = React.createClass({
 			}
 			<td>{formatTime(riff.from)}</td>
 			<td>{formatTime(riff.to)}</td>
+			<td><i onClick={this.edit} className="icon-edit"></i></td>
 		</tr>;
 	},
 	playRiff(e) {
@@ -26,6 +27,9 @@ var Riff = React.createClass({
 			song: this.props.song,
 			riff: this.props.riff
 		});
+	},
+	edit(e) {
+		e.stopPropagation();
 	}
 });
 
@@ -38,13 +42,18 @@ var Riffs = React.createClass({
 			</div>;
 		}
 		return <table className="riffs">
-			<tr>
-				<td onClick={this.addRiff}>+</td>
-				<td className="riffs__long"> <strong>NAME</strong> </td>
-				<td> <strong>FROM</strong> </td>
-				<td> <strong>TO</strong> </td>
-			</tr>
-			{this.props.riffs.map(riff => <Riff riff={riff} song={this.props.song}/>)}
+			<thead>
+				<tr>
+					<td onClick={this.addRiff}>+</td>
+					<td className="riffs__long"> <strong>NAME</strong> </td>
+					<td> <strong>FROM</strong> </td>
+					<td> <strong>TO</strong> </td>
+					<td></td>
+				</tr>
+			</thead>
+			<tbody>
+				{this.props.riffs.map(riff => <Riff riff={riff} song={this.props.song}/>)}
+			</tbody>
 		</table>;
 	},
 

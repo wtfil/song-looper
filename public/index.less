@@ -266,6 +266,7 @@ button {
 
 .riffs {
 	width: 100%;
+	border-spacing: 0;
 	& td {
 		height: 25px;
 		padding: 3px 6px;
@@ -289,6 +290,14 @@ button {
 			display: none;
 		}
 	}
+
+	& tr:not(:hover) .icon-edit {
+		visibility: hidden;
+	}
+
+	& tbody tr:hover {
+		background: @bg-light;
+	}
 }
 
 .file-input {
@@ -301,7 +310,7 @@ button {
 }
 
 .icon {
-	@size: 26px;
+	@size: 24px;
 	@padding: 2px;
 	.mixin {
 		width: @size;
@@ -322,9 +331,26 @@ button {
 
 	&-edit {
 		.mixin;
+		position: relative;
+		&:before {
+			content: '';
+			display: inline-block;
+			width: @size / 4;
+			height: @size * 0.75;
+			background: @bg-dark;
+			position: absolute;
+			transform: rotate(45deg);
+		}
 		&:after {
-			content: "⋮";
-			font-weight: bold;
+			@width: 5px;
+			content: '';
+			border-top: @width solid transparent;
+			border-left: @width solid @bg-dark;
+			width: 0;
+			height: 0;
+			position: absolute;
+			bottom: @width;
+			left: @width;
 		}
 	}
 	&-delete {
