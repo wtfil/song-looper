@@ -100,6 +100,9 @@ actions.changeSong.listen(function (song) {
 	actions.play();
 });
 actions.playRiff.listen(function (data) {
+	if (data.riff === currentRiff) {
+		return actions.pausePlay();
+	}
 	audio.src = data.song.src;
 	updateRiff(data.riff);
 	actions.play();

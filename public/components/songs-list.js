@@ -3,8 +3,22 @@ var Reflux = require('reflux');
 var store= require('../lib/song-store');
 var actions = require('../lib/audio-actions');
 var formatTime = require('../lib/format-time');
+var Input = require('./updatable-input');
 
 var Riff = React.createClass({
+	getInitialState() {
+		return {editable: false};
+	},
+	update(prop) {
+		return (value) => {
+			var data = {
+				index: this.props.riff.index,
+				songId: this.props.song.id
+			};
+			data[prop] = value;
+			actions.updateRiff(data);
+		};
+	},
 	render() {
 		var riff = this.props.riff;
 
@@ -13,12 +27,24 @@ var Riff = React.createClass({
 				<span >{riff.index + 1}</span>
 				<i className="icon-play"></i>
 			</td>
-			{riff.name ?
-				<td>{riff.name}</td> :
-				<td className="secondary-text">Unnamed section</td>
+			{this.state.editable ?
+				<td><Input onChange={this.update('name')} value={this.name}/></td> :
+				riff.name ?
+					<td>{riff.name}</td> :
+					<td className="secondary-text">Unnamed section</td>
 			}
-			<td>{formatTime(riff.from)}</td>
-			<td>{formatTime(riff.to)}</td>
+			<td>
+				{this.state.editable ?
+					<Input onChange={this.update('from')} value={riff.from}/> :
+					formatTime(riff.from)
+				}
+			</td>
+			<td>
+				{this.state.editable ?
+					<Input onChange={this.update('to')} value={riff.to}/> :
+					formatTime(riff.to)
+				}
+			</td>
 			<td><i onClick={this.edit} className="icon-edit"></i></td>
 		</tr>;
 	},
@@ -30,6 +56,7 @@ var Riff = React.createClass({
 	},
 	edit(e) {
 		e.stopPropagation();
+		this.setState({editable: !this.state.editable});
 	}
 });
 
@@ -44,10 +71,10 @@ var Riffs = React.createClass({
 		return <table className="riffs">
 			<thead>
 				<tr>
-					<td onClick={this.addRiff}>+</td>
-					<td className="riffs__long"> <strong>NAME</strong> </td>
-					<td> <strong>FROM</strong> </td>
-					<td> <strong>TO</strong> </td>
+					<td className="riffs__index-title" onClick={this.addRiff}>+</td>
+					<td className="riffs__name-title"> <strong>NAME</strong> </td>
+					<td className="riffs__time-title"> <strong>FROM</strong> </td>
+					<td className="riffs__time-title"> <strong>TO</strong> </td>
 					<td></td>
 				</tr>
 			</thead>

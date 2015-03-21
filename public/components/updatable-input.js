@@ -23,6 +23,9 @@ module.exports = React.createClass({
 			this.props.onChange(this.state.value);
 		}
 	},
+	onClick(e) {
+		e.stopPropagation();
+	},
 	render() {
 		return <input
 			autoFocus={this.props.autoFocus}
@@ -31,6 +34,7 @@ module.exports = React.createClass({
 			type="text"
 			value={this.state.value}
 			onChange={this.onChange}
+			onClick={this.onClick}
 			onBlur={this.onBlur}
 			onKeyUp={this.onKeyUp}
 		/>;
