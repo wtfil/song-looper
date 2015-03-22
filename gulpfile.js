@@ -1,4 +1,5 @@
 var gulp = require('gulp');
+var ghPages = require('gulp-gh-pages');
 var less = require('gulp-less');
 var gutil = require('gulp-util');
 var browserify = require('browserify');
@@ -10,7 +11,7 @@ var fs = require('fs');
 var files = {
 	js: {
     	src: './public/index.js',
-    	dest: './public/_index.js'
+    	dest: './public/build.js'
 	},
 	css: {
 		src: './public/index.less',
@@ -81,5 +82,9 @@ gulp.task('js-watch', function () {
 
 });
 
+gulp.task('deploy', ['css', 'js'], function () {
+	return gulp.src('./public/**/*')
+		.pipe(ghPages());
+});
+
 gulp.task('dev', ['server', 'watch']);
-gulp.task('prod', ['css', 'js'])
