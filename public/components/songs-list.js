@@ -25,7 +25,7 @@ var Riff = React.createClass({
 		return <tr onClick={this.playRiff}>
 			<td className="riffs__index">
 				<span >{riff.index + 1}</span>
-				<i className="icon-play"></i>
+				<i className="icon-play small"></i>
 			</td>
 			{this.state.editable ?
 				<td><Input onChange={this.update('name')} value={this.name}/></td> :
@@ -98,13 +98,16 @@ var Song = React.createClass({
 		};
 	},
 	render() {
-		return <div className={'song-item ' + (this.state.editable && 'editable' || '')}>
-			<span onClick={this.changeSong}>{this.state.name}</span>
-			{this.state.editable ?
-				<i className="mr icon-collapse off right" onClick={this.save}/> :
-				<i className="mr icon-collapse right" onClick={this.setEditable}/>
-			}
-			{this.state.editable && <div className="song-item__options">
+		return <div onClick={this.changeSong} className={'song-item ' + (this.state.editable && 'editable' || '')}>
+			<i className="song-item__play icon-play small"></i>
+			<span >{this.state.name}</span>
+			<div className="song-item__collapse" onClick={this.changeEditable}>
+				{this.state.editable ?
+					<i className="mr icon-collapse off"/> :
+					<i className="mr icon-collapse"/>
+				}
+			</div>
+			{this.state.editable && <div className="song-item__options" onClick={this.stopPropagation}>
 				<Riffs riffs={this.props.song.riffs} song={this.props.song} />
 			</div>}
 		</div>;
@@ -123,13 +126,12 @@ var Song = React.createClass({
 			name: name
 		});
 	},
-	setEditable(e) {
+	stopPropagation(e) {
 		e.stopPropagation();
-		this.setState({editable: true});
 	},
-	save(e) {
+	changeEditable(e) {
 		e.stopPropagation();
-		this.setState({editable: false});
+		this.setState({editable: !this.state.editable});
 	},
 	changeSong() {
 		actions.changeSong(this.props.song);

@@ -95,6 +95,9 @@ function updateRiff(riff) {
 }
 
 actions.changeSong.listen(function (song) {
+	if (!currentRiff && audio.src === song.src) {
+		return actions.pausePlay();
+	}
 	audio.src = song.src;
 	currentRiff = null;
 	actions.play();

@@ -98,28 +98,30 @@ button {
 	padding: 10px 20px;
 	border-top: 1px solid #d9d9d9;
 	overflow: hidden;
+	position: relative;
 
-	&:not(.editable):hover {
-		background: @bg-light;
-	}
-
-	&__input {
-		width: 100%;
+	&__play {
+		margin-right: 10px;
+		visibility: hidden;
 	}
 	&__options {
 		margin-top: 14px;
 	}
+	&__collapse {
+		position: absolute;
+		right: 0;
+		top: 0;
+		padding: 10px 20px;
+	}
 
-	&__name {
-		float: left;
-		line-height: 2;
-		&:hover {
-			text-decoration: underline;
-		}
+	&:not(.editable):hover {
+		background: @bg-light;
 	}
-	&__save {
-		margin-top: 5px;
+	&:not(.editable):hover &__play {
+		visibility: visible;
 	}
+
+
 }
 
 .player {
@@ -287,8 +289,6 @@ button {
 	&__index {
 		min-width: 25px;
 		& .icon-play {
-			transform: scale(0.6);
-			margin-left: -2px;
 			display: none;
 		}
 	}
@@ -383,7 +383,6 @@ button {
 		margin-top: -2px;
 		transition: all .2s linear;
 		&.off {
-			margin-top: 2px;
 			transform: rotate(45deg);
 		}
 	}
@@ -395,9 +394,14 @@ button {
 		width: 0;
 		height: 0;
 
-		border-left: @size - @padding*4 solid @bg-dark;
-		border-top: @size*.5 - @padding  solid transparent;
-		border-bottom: @size*.5 - @padding solid transparent;
+		border-left: @size*.86 solid @bg-dark;
+		border-top: @size*.5 solid transparent;
+		border-bottom: @size*.5 solid transparent;
+
+		&.small {
+			@small: @size * .6;
+			border-width: @small*.5 0 @small*.5 @small*.86;
+		}
 	}
 
 	&-pause {
