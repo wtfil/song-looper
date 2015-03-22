@@ -5,8 +5,6 @@ var store = require('./lib/audio-store');
 var Progress = require('./components/progress');
 var PlayerTime = require('./components/player-time');
 var SongsList = require('./components/songs-list');
-var songStore = require('./lib/song-store');
-var UpdatableInput = require('./components/updatable-input');
 
 var Player = React.createClass({
 
@@ -25,15 +23,13 @@ var Player = React.createClass({
 			<PlayerTime current={store.current} duration={store.duration} onChange={this.changePosition}/>
 			<div className="player__footer">
 				<div className="player__controls">
-					<div className="player__stop"></div>
 					{store.isPlay ?
-						<div className="player__pause" onClick={actions.pause}></div> :
-						<div className="player__play" onClick={actions.play}></div>
+						<i className="icon-pause" onClick={actions.pause}/> :
+						<i className="icon-play" onClick={actions.play} />
 					}
 					<Progress progress={store.tempo - 0.5} onChange={this.changeTempo}/>
 					<span className="player__tempo">{store.tempo.toFixed(1)}</span>
 				</div>
-				<UpdatableInput className="player__formula" placeholder="type time range (ex: 7-8)" value={songStore.getFormula()} onChange={actions.changeFormula}/>
 			</div>
 		</div>;
 	}

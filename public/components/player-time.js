@@ -1,16 +1,6 @@
 var React = require('react');
 var Progress = require('./progress');
-function formatTime(time) {
-	var minutes = (time / 60).toFixed(0);
-	var seconds = (time % 60).toFixed(0);
-	if (minutes >= 1) {
-		minutes = minutes >= 10 ? minutes : ('0' + minutes);
-	} else {
-		minutes = '00';
-	}
-	seconds = seconds >= 10 ? seconds : ('0' + seconds);
-	return minutes + ':' + seconds;
-}
+var formatTime = require('../lib/format-time');
 
 module.exports = React.createClass({
 	render() {

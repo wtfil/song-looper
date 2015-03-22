@@ -3,9 +3,10 @@
 
 @bg-contrast: #ff9a5c;
 @bg-dark: #5a5a5a;
+@bg-light: #f2f2f2;
 @border-color: #aaa;
 @font-color: #3f3f3f;
-@secondary-text: #707070;
+@secondary-text: #999;
 @font-family: Roboto, arial, sans-serif;
 
 html, body {
@@ -57,6 +58,15 @@ button {
 	color: @secondary-text;
 }
 
+.call-to-action:hover {
+	text-decoration: underline;
+}
+
+.right { float: right}
+.left { float: left}
+.mr { margin-right: 5px; }
+.ml { margin-left: 5px; }
+
 .app {
 	position: absolute;
 	width: 100%;
@@ -88,57 +98,35 @@ button {
 	padding: 10px 20px;
 	border-top: 1px solid #d9d9d9;
 	overflow: hidden;
-	&.editable {
-		padding: 4px 14px;
+	position: relative;
+
+	&__play {
+		margin-right: 10px;
+		visibility: hidden;
+	}
+	&__options {
+		margin-top: 14px;
+	}
+	&__collapse {
+		position: absolute;
+		right: 0;
+		top: 0;
+		padding: 10px 20px;
 	}
 
-	&__add {
-		@size: 18px;
-		width: @size;
-		height: @size;
-		line-height: @size;
-		text-align: center;
-		margin-left: 5px;
-		font-size: 20px;
-		display: inline-block;
-		background: @bg-contrast;
-		color: white;
-		border-radius: 3px;
-		cursor: pointer;
+	&:not(.editable):hover {
+		background: @bg-light;
+	}
+	&:not(.editable):hover &__play {
+		visibility: visible;
 	}
 
-	&__input {
-		width: 100%;
-	}
-	&__name:hover {
-		text-decoration: underline;
-	}
-	&__edit {
-		float: right;
-		&:hover {
-			text-decoration: underline;
-		}
-	}
-	&__riffs {
-		margin: 10px 0 5px 0;
-	}
-	&__delete {
-		float: right;
-		cursor: pointer;
-		transform: rotate(45deg);
-		font-size: 1.3em;
-		line-height: 1;
-		margin-left: 10px;
-	}
-	&__save {
-		float: right;
-		margin-top: 5px;
-	}
+
 }
 
 .player {
-	@size: 30px;
-	@padding: 3px;
+	@size: 26px;
+	@padding: 2px;
 
 	position: absolute;
 	box-sizing: border-box;
@@ -154,19 +142,9 @@ button {
 		float: left;
 		margin-top: 4px;
 	}
-	input&__formula {
-		vertical-align: top;
-		padding: 4px 10px;
-		font-size: 24px;
-		margin-left: 50px;
-		@media @mobile {
-			margin-left: 0;
-			width: 100%;
-		}
-	}
 	&__controls .progress {
 		display: inline-block;
-		margin: 9px;
+		margin: 6px;
 		width: 100px;
 	}
 
@@ -174,24 +152,6 @@ button {
 		line-height: @size;
 		margin-left: 10px;
 		vertical-align: top;
-	}
-
-	&__play {
-		display: inline-block;
-		cursor: pointer;
-		width: @size;
-		height: @size;
-		box-sizing: border-box;
-		position: relative;
-		&:after {
-			left: @padding;
-			top: @padding;
-			position: absolute;
-			content: '';
-			border-left: @size - @padding*2 solid @bg-dark;
-			border-top: @size*.5 - @padding  solid transparent;
-			border-bottom: @size*.5 - @padding solid transparent;
-		}
 	}
 
 	&__stop {
@@ -207,31 +167,6 @@ button {
 			left: @padding;
 			width: @size - @padding*2;
 			height: @size - @padding*2;
-			background: @bg-dark;
-		}
-	}
-	&__pause {
-		display: inline-block;
-		width: @size;
-		height: @size;
-		cursor: pointer;
-		position: relative;
-		&:before {
-			content: '';
-			position: absolute;
-			left: @size/5;
-			width: @size/5;
-			top: @padding;
-			bottom: @padding;
-			background: @bg-dark;
-		}
-		&:after {
-			content: '';
-			position: absolute;
-			right: @size/5;
-			width: @size/5;
-			top: @padding;
-			bottom: @padding;
 			background: @bg-dark;
 		}
 	}
@@ -315,16 +250,63 @@ button {
 		margin-top: 5px;
 	}
 	&__formula {
+		vertical-align: top;
+		margin-left: 5px;
 		width: 30%;
 	}
 	&__name {
+		vertical-align: top;
 		padding-left: 5px;
 		box-sizing: border-box;
-		width: 70%;
+		width: 60%;
 		display: inline-block;
 		& input {
 			width: 100%;
 		}
+	}
+}
+
+.riffs {
+	width: 100%;
+	table-layout: fixed;
+	border-spacing: 0;
+	& td {
+		height: 25px;
+		padding: 3px 6px;
+	}
+	&__index-title {
+		width: 10%;
+	}
+	&__name-title {
+		width: 50%;
+	}
+	&__time-title {
+		width: 15%;
+	}
+	& input {
+		width: 100%;
+	}
+	&__index {
+		min-width: 25px;
+		& .icon-play {
+			display: none;
+		}
+	}
+	& tr:hover &__index {
+		& .icon-play {
+			display: block;
+		}
+		& span {
+			display: none;
+		}
+	}
+
+	& tr:not(:hover) .icon-edit {
+		visibility: hidden;
+	}
+
+	& tbody tr:hover {
+		background: @bg-light;
 	}
 }
 
@@ -335,4 +317,128 @@ button {
 	& input {
 		display: none;
 	}
+}
+
+.icon {
+	@size: 24px;
+	@padding: 2px;
+	.mixin {
+		width: @size;
+		height: @size;
+		text-align: center;
+		display: inline-block;
+		cursor: pointer;
+		 -webkit-user-select: none;
+
+		&:after {
+			font-style: normal;
+			font-size: @size;
+			color: @font-color;
+		}
+		&:hover {
+			opacity: 0.8;
+		}
+	}
+
+	&-edit {
+		.mixin;
+		position: relative;
+		&:before {
+			content: '';
+			display: inline-block;
+			width: @size / 4;
+			height: @size * 0.75;
+			background: @bg-dark;
+			position: absolute;
+			transform: rotate(45deg);
+		}
+		&:after {
+			@width: 5px;
+			content: '';
+			border-top: @width solid transparent;
+			border-left: @width solid @bg-dark;
+			width: 0;
+			height: 0;
+			position: absolute;
+			bottom: @width;
+			left: @width;
+		}
+	}
+	&-delete {
+		.mixin;
+		&:after {
+			content: "+";
+			display: inline-block;
+			transform: rotate(45deg);
+		}
+	}
+	&-collapse {
+		.mixin;
+		width: @size / 3;
+		height: @size / 3;
+		border: solid @bg-contrast;
+		border-width: 3px 0 0 3px;
+		transform: rotate(225deg);
+		margin-top: -2px;
+		transition: all .2s linear;
+		&.off {
+			transform: rotate(45deg);
+		}
+	}
+
+	&-play {
+		.mixin;
+		position: relative;
+		width: 0;
+		height: 0;
+
+		border-left: @size*.86 solid @bg-dark;
+		border-top: @size*.5 solid transparent;
+		border-bottom: @size*.5 solid transparent;
+
+		&.small {
+			@small: @size * .6;
+			border-width: @small*.5 0 @small*.5 @small*.86;
+		}
+	}
+
+	&-pause {
+		.mixin;
+		position: relative;
+		width: @size * 5 / 6;
+		height: @size;
+		&:before {
+			content: '';
+			position: absolute;
+			left: @size/6;
+			width: @size/6;
+			top: @padding;
+			bottom: @padding;
+			background: @bg-dark;
+		}
+		&:after {
+			content: '';
+			position: absolute;
+			right: @size/6;
+			width: @size/6;
+			top: @padding;
+			bottom: @padding;
+			background: @bg-dark;
+		}
+	}
+
+	&-save {
+		.mixin;
+		&:after {
+			content: '';
+			display: block;
+			width: @size / 3;
+			height: @size / 3 * 2;
+			border: solid @bg-contrast;
+			border-width: 0 3px 3px 0;
+			margin-left: 4px;
+			transform: rotate(45deg);
+		}
+	}
+
 }

@@ -34,6 +34,14 @@ gulp.task('css', function () {
 		.pipe(gulp.dest(files.css.dest));
 });
 
+gulp.task('js', function () {
+	return browserify(files.js.src)
+		.transform(transform)
+		.bundle()
+		.pipe(fs.createWriteStream(files.js.dest));
+
+});
+
 gulp.task('watch', ['js-watch', 'css-watch'])
 
 gulp.task('css-watch', ['css'], function () {
@@ -74,3 +82,4 @@ gulp.task('js-watch', function () {
 });
 
 gulp.task('dev', ['server', 'watch']);
+gulp.task('prod', ['css', 'js'])

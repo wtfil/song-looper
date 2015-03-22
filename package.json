@@ -11,12 +11,13 @@
   },
   "dependencies": {
     "browserify": "^6.1.0",
+    "extend": "^2.0.0",
     "gulp": "^3.8.8",
     "gulp-less": "^2.0.1",
     "gulp-util": "^3.0.1",
     "http-server": "^0.7.2",
     "idb-wrapper": "^1.4.1",
-    "react": "^0.12.2",
+    "react": "^0.13.0-rc2",
     "reactify": "^0.17.1",
     "reflux": "^0.2.3",
     "watchify": "^2.0.0"

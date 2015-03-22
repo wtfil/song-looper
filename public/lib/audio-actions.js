@@ -1,14 +1,10 @@
 var Reflux = require('reflux');
 var audio = new Audio();
-var repeater = require('./repeater');
-var breakpoint = repeater.end();
+var currentRiff;
 
 var actions = Reflux.createActions({
 	setFile: {
 		children: ['completed']
-	},
-	changeFormula: {
-		children: ['valid', 'invalid']
 	},
 	changePosition: {
 		children: ['completed']
@@ -26,7 +22,8 @@ var actions = Reflux.createActions({
 	changeTempo: {},
 	pausePlay: {},
 	changeDuration: {},
-	changeSong: {}
+	changeSong: {},
+	playRiff: {}
 });
 
 audio.addEventListener('loadedmetadata', () => {
@@ -34,8 +31,8 @@ audio.addEventListener('loadedmetadata', () => {
 });
 audio.addEventListener('timeupdate', () => {
 	var time = audio.currentTime;
-	if (time > breakpoint) {
-		audio.currentTime = repeater.start();
+	if (currentRiff && time > currentRiff.to) {
+		audio.currentTime = currentRiff.from;
 	} else {
 		actions.changePosition.completed(audio.currentTime);
 	}
@@ -90,16 +87,27 @@ actions.setFile.completed.listen(function (src) {
 	actions.play();
 });
 
-function updateFormula(formula) {
-	breakpoint = repeater(formula).end();
-	audio.currentTime = repeater.start();
+function updateRiff(riff) {
+	currentRiff = riff;
+	if (riff) {
+		audio.currentTime = riff.from;
+	}
 }
 
-actions.changeFormula.listen(updateFormula);
-
 actions.changeSong.listen(function (song) {
+	if (!currentRiff && audio.src === song.src) {
+		return actions.pausePlay();
+	}
 	audio.src = song.src;
-	updateFormula(song.formula);
+	currentRiff = null;
+	actions.play();
+});
+actions.playRiff.listen(function (data) {
+	if (data.riff === currentRiff) {
+		return actions.pausePlay();
+	}
+	audio.src = data.song.src;
+	updateRiff(data.riff);
 	actions.play();
 });
 
