@@ -328,6 +328,7 @@ button {
 		text-align: center;
 		display: inline-block;
 		cursor: pointer;
+		 -webkit-user-select: none;
 
 		&:after {
 			font-style: normal;
@@ -372,11 +373,9 @@ button {
 		}
 	}
 	&-collapse {
-		cursor: pointer;
-		 -webkit-user-select: none;
+		.mixin;
 		width: @size / 3;
 		height: @size / 3;
-		display: inline-block;
 		border: solid @bg-contrast;
 		border-width: 3px 0 0 3px;
 		transform: rotate(225deg);
@@ -388,9 +387,8 @@ button {
 	}
 
 	&-play {
-		display: inline-block;
+		.mixin;
 		position: relative;
-		cursor: pointer;
 		width: 0;
 		height: 0;
 
@@ -405,16 +403,15 @@ button {
 	}
 
 	&-pause {
-		display: inline-block;
-		width: @size;
-		height: @size;
-		cursor: pointer;
+		.mixin;
 		position: relative;
+		width: @size * 5 / 6;
+		height: @size;
 		&:before {
 			content: '';
 			position: absolute;
-			left: @size/5;
-			width: @size/5;
+			left: @size/6;
+			width: @size/6;
 			top: @padding;
 			bottom: @padding;
 			background: @bg-dark;
@@ -422,26 +419,26 @@ button {
 		&:after {
 			content: '';
 			position: absolute;
-			right: @size/5;
-			width: @size/5;
+			right: @size/6;
+			width: @size/6;
 			top: @padding;
 			bottom: @padding;
 			background: @bg-dark;
 		}
 	}
 
-	&-add {
-		width: @size;
-		height: @size;
-		line-height: @size;
-		text-align: center;
-		font-size: 20px;
-		display: inline-block;
-		background: @bg-contrast;
-		color: white;
-		border-radius: 3px;
-		cursor: pointer;
+	&-save {
+		.mixin;
+		&:after {
+			content: '';
+			display: block;
+			width: @size / 3;
+			height: @size / 3 * 2;
+			border: solid @bg-contrast;
+			border-width: 0 3px 3px 0;
+			margin-left: 4px;
+			transform: rotate(45deg);
+		}
 	}
-
 
 }

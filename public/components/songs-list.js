@@ -45,7 +45,12 @@ var Riff = React.createClass({
 					formatTime(riff.to)
 				}
 			</td>
-			<td><i onClick={this.edit} className="icon-edit"></i></td>
+			<td>
+				{this.state.editable ?
+					<i onClick={this.edit} className="icon-save"></i> :
+					<i onClick={this.edit} className="icon-edit"></i>
+				}
+			</td>
 		</tr>;
 	},
 	playRiff(e) {
