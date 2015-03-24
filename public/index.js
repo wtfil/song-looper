@@ -1,34 +1,36 @@
 var React = require('react');
 var Reflux = require('reflux');
 var actions = require('./lib/audio-actions');
-var store = require('./lib/audio-store');
+var audioStore = require('./lib/audio-store');
+var songStore = require('./lib/song-store');
 var Progress = require('./components/progress');
 var PlayerTime = require('./components/player-time');
 var SongsList = require('./components/songs-list');
+var SongUpload = require('./components/song-upload');
 
 var Player = React.createClass({
 
-	mixins: [Reflux.listenTo(store, 'forceUpdate')],
+	mixins: [Reflux.listenTo(audioStore, 'forceUpdate')],
 
 	changeTempo(value) {
 		actions.changeTempo(value + 0.5);
 	},
 
 	changePosition(position) {
-		actions.changePosition(position * store.duration);
+		actions.changePosition(position * audioStore.duration);
 	},
 
 	render() {
 		return <div className="player">
-			<PlayerTime current={store.current} duration={store.duration} onChange={this.changePosition}/>
+			<PlayerTime current={audioStore.current} duration={audioStore.duration} onChange={this.changePosition}/>
 			<div className="player__footer">
 				<div className="player__controls">
-					{store.isPlay ?
+					{audioStore.isPlay ?
 						<i className="icon-pause" onClick={actions.pause}/> :
 						<i className="icon-play" onClick={actions.play} />
 					}
-					<Progress progress={store.tempo - 0.5} onChange={this.changeTempo}/>
-					<span className="player__tempo">{store.tempo.toFixed(1)}</span>
+					<Progress progress={audioStore.tempo - 0.5} onChange={this.changeTempo}/>
+					<span className="player__tempo">{audioStore.tempo.toFixed(1)}</span>
 				</div>
 			</div>
 		</div>;
@@ -37,7 +39,18 @@ var Player = React.createClass({
 });
 
 var App = React.createClass({
+	mixins: [Reflux.listenTo(songStore, 'forceUpdate')],
 	render() {
+		if (!songStore.ready) {
+			return null;
+		}
+		if (songStore.isEmpty()) {
+			return <div className="app">
+				<div className="center">
+					<SongUpload>Upload file</SongUpload>
+				</div>
+			</div>
+		}
 		return <div className="app">
 			<SongsList/>
 			<Player/>

@@ -1,13 +1,14 @@
 @desktop:   ~"only screen and (min-width: 540px) and (max-width: 1199px)";
 @mobile:    ~"only screen and (max-width: 540px)";
 
-@bg-contrast: #ff9a5c;
+@bg-contrast: #a7ca3a;
 @bg-dark: #5a5a5a;
 @bg-light: #f2f2f2;
 @border-color: #aaa;
-@font-color: #3f3f3f;
+@font-color: #a5a5a5;
+@font-hover: #111;
 @secondary-text: #999;
-@font-family: Roboto, arial, sans-serif;
+@font-family: Open Sans;
 
 html, body {
 	-webkit-tap-highlight-color: transparent;
@@ -17,6 +18,10 @@ html, body {
 	padding: 0;
 	font-size: 14px;
 	color: @font-color;
+}
+body {
+	display: flex;
+	justify-content: center;
 }
 
 input[type=text] {
@@ -62,14 +67,22 @@ button {
 	text-decoration: underline;
 }
 
+.center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+}
+
 .right { float: right}
 .left { float: left}
 .mr { margin-right: 5px; }
 .ml { margin-left: 5px; }
 
 .app {
-	position: absolute;
+	position: relative;
 	width: 100%;
+	max-width: 860px;
 	bottom: 0;
 	top: 0;
 	box-sizing: border-box;
@@ -84,7 +97,7 @@ button {
 	&::-webkit-scrollbar {
 		display: none;
 	}
-	&__head {
+	&__center {
 		padding: 10px 20px;
 	}
 	&__list {
@@ -313,7 +326,29 @@ button {
 .file-input {
 	font-size: 24px;
 	cursor: pointer;
-	color: @bg-dark;
+	color: @font-color;
+	display: inline-block;
+	&:hover {
+		color: @font-hover;
+	}
+	&__icon {
+		line-height: 1;
+		font-size: 36px;
+		float: left;
+		color: @bg-contrast;
+		position: relative;
+		&:after {
+			content: '♪';
+			font-size: 14px;
+			top: 0;
+			right: 0;
+			position: absolute;
+		}
+	}
+	&__text {
+		float: right;
+		margin-left: 4px;
+	}
 	& input {
 		display: none;
 	}
@@ -328,6 +363,7 @@ button {
 		text-align: center;
 		display: inline-block;
 		cursor: pointer;
+		font-style: normal;
 		 -webkit-user-select: none;
 
 		&:after {
@@ -440,5 +476,4 @@ button {
 			transform: rotate(45deg);
 		}
 	}
-
 }

@@ -16,10 +16,12 @@ var fluxStore = Reflux.createStore({
 	init() {
 		this.listenTo(actions.setFile.completed, 'onUrlCreated');
 		this.listenToMany(actions);
+		this.ready = false;
 		this.songs = [];
 	},
 
 	updateFromDb() {
+		this.ready = true;
 		dbStore.getAll(this.setSongs);
 	},
 
@@ -100,6 +102,10 @@ var fluxStore = Reflux.createStore({
 	setSongs(songs) {
 		this.songs = songs;
 		this.trigger();
+	},
+
+	isEmpty() {
+		return this.songs.length === 0;
 	}
 
 });
