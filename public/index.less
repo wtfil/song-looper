@@ -10,7 +10,20 @@
 @border-color: #eaeaea;
 @font-hover: #111;
 @secondary-text: #999;
-@font-family: Open Sans;
+
+@font-face {
+	font-family: 'Open Sans Light';
+	src: url('fonts/OpenSans-Light.ttf');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Open Sans Semibold';
+	src: url('fonts/OpenSans-Semibold.ttf');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-family: Open Sans Light;
 
 html, body {
 	-webkit-tap-highlight-color: transparent;
@@ -155,22 +168,34 @@ button {
 	&__footer {
 		margin-top: 3px;
 		padding-bottom: 10px;
+		display: flex;
 	}
+
 	&__controls {
-		float: left;
-		margin-top: 4px;
+		flex: 2;
 	}
+
+	&__tempo {
+		flex: 1;
+	}
+
+	&__file {
+		flex: 2;
+		text-align: right;
+	}
+
 	&__controls .progress {
 		display: inline-block;
 		margin: 6px;
 		width: 100px;
 	}
 
-	&__tempo {
+	&__aatempo {
 		line-height: @size;
 		margin-left: 10px;
 		vertical-align: top;
 	}
+
 
 	&__stop {
 		display: inline-block;
@@ -361,6 +386,16 @@ button {
 	}
 	& input {
 		display: none;
+	}
+
+	&.small {
+		font-size: 18px;
+	}
+	&.small &__icon {
+		font-size: 24px;
+	}
+	&.small &__icon:after {
+		font-size: 9px;
 	}
 }
 

@@ -29,8 +29,13 @@ var Player = React.createClass({
 						<i className="icon-pause" onClick={actions.pause}/> :
 						<i className="icon-play" onClick={actions.play} />
 					}
+				</div>
+				<div className="player__tempo">
 					<Progress progress={audioStore.tempo - 0.5} onChange={this.changeTempo}/>
-					<span className="player__tempo">{audioStore.tempo.toFixed(1)}</span>
+					<span>{audioStore.tempo.toFixed(1)}</span>
+				</div>
+				<div className="player__file">
+					<SongUpload small>Upload new song</SongUpload>
 				</div>
 			</div>
 		</div>;
@@ -47,7 +52,7 @@ var App = React.createClass({
 		if (songStore.isEmpty()) {
 			return <div className="app">
 				<div className="center">
-					<SongUpload>Upload file</SongUpload>
+					<SongUpload>Upload song</SongUpload>
 				</div>
 			</div>
 		}
