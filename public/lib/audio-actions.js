@@ -23,7 +23,8 @@ var actions = Reflux.createActions({
 	pausePlay: {},
 	changeDuration: {},
 	changeSong: {},
-	playRiff: {}
+	playRiff: {},
+	deleteRiff: {}
 });
 
 audio.addEventListener('loadedmetadata', () => {

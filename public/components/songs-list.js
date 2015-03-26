@@ -23,9 +23,12 @@ var Riff = React.createClass({
 		var riff = this.props.riff;
 
 		return <tr onClick={this.playRiff}>
-			<td className="riffs__index">
-				<span >{riff.index + 1}</span>
+			<td>
 				<i className="icon-play small"></i>
+			</td>
+			<td className="riffs__index">
+				<i onClick={this.deleteRiff} className="icon-delete"></i>
+				<span >{riff.index + 1}</span>
 			</td>
 			{this.state.editable ?
 				<td><Input onChange={this.update('name')} value={this.name}/></td> :
@@ -53,6 +56,13 @@ var Riff = React.createClass({
 			</td>
 		</tr>;
 	},
+	deleteRiff(e) {
+		e.stopPropagation();
+		actions.deleteRiff({
+			songId: this.props.song.id,
+			riff: this.props.riff
+		});
+	},
 	playRiff(e) {
 		actions.playRiff({
 			song: this.props.song,
@@ -76,7 +86,8 @@ var Riffs = React.createClass({
 		return <table className="riffs">
 			<thead>
 				<tr>
-					<td className="riffs__index-title" onClick={this.addRiff}>+</td>
+					<td className="riffs__add" onClick={this.addRiff}>+</td>
+					<td className="riffs__index-title"></td>
 					<td className="riffs__name-title"> <strong>NAME</strong> </td>
 					<td className="riffs__time-title"> <strong>FROM</strong> </td>
 					<td className="riffs__time-title"> <strong>TO</strong> </td>
@@ -105,17 +116,26 @@ var Song = React.createClass({
 	render() {
 		return <div onClick={this.changeSong} className={'song-item ' + (this.state.editable && 'editable' || '')}>
 			<i className="song-item__play icon-play small"></i>
-			<span >{this.state.name}</span>
-			<div className="song-item__collapse" onClick={this.changeEditable}>
-				{this.state.editable ?
-					<i className="mr icon-collapse off"/> :
-					<i className="mr icon-collapse"/>
-				}
-			</div>
+			<span className="song-item__name">{this.state.name}</span>
+
+			{this.state.editable ?
+				<div className="song-item__collapse" onClick={this.close}>Collapse</div> :
+				<div className="song-item__collapse" onClick={this.addRiff}>Add section</div>
+			}
 			{this.state.editable && <div className="song-item__options" onClick={this.stopPropagation}>
 				<Riffs riffs={this.props.song.riffs} song={this.props.song} />
 			</div>}
 		</div>;
+	},
+
+	addRiff(e) {
+		e.stopPropagation();
+		actions.addRiff(this.props.song.id);
+		this.setState({editable: true});
+	},
+	close(e) {
+		e.stopPropagation();
+		this.setState({editable: false});
 	},
 
 	deleteItem() {
@@ -134,10 +154,6 @@ var Song = React.createClass({
 	stopPropagation(e) {
 		e.stopPropagation();
 	},
-	changeEditable(e) {
-		e.stopPropagation();
-		this.setState({editable: !this.state.editable});
-	},
 	changeSong() {
 		actions.changeSong(this.props.song);
 	}
@@ -148,9 +164,7 @@ module.exports = React.createClass({
 	mixins: [Reflux.listenTo(store, 'forceUpdate')],
 	render() {
 		return <div className="songs-list">
-			<div className="songs-list__list">
-				{store.songs.map((song, key) => <Song key={song.id} song={song}/>)}
-			</div>
+			{store.songs.map((song, key) => <Song key={song.id} song={song}/>)}
 		</div>;
 	}
 });

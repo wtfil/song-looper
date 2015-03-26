@@ -72,6 +72,13 @@ var fluxStore = Reflux.createStore({
 		this.updateById(id, 'riffs', riffs.concat(riff));
 	},
 
+	onDeleteRiff(data) {
+		var riffs = this.getById(data.songId).riffs
+			.filter(riff => riff !== data.riff);
+
+		this.updateById(data.songId, 'riffs', riffs);
+	},
+
 	onUpdateRiff(data) {
 		var riffs = this.getById(data.songId).riffs;
 		extend(riffs[data.index], data);
