@@ -36,7 +36,8 @@ gulp.task('css', function () {
 
 gulp.task('js', function () {
 	return browserify(files.js.src)
-		.transform(transform)
+		.transform('babelify')
+		.transform('reactify')
 		.bundle()
 		.pipe(fs.createWriteStream(files.js.dest));
 
