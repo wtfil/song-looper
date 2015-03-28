@@ -1,35 +1,65 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var React = require('react');
-var Reflux = require('reflux');
-var actions = require('./lib/audio-actions');
-var store = require('./lib/audio-store');
-var Progress = require('./components/progress');
-var PlayerTime = require('./components/player-time');
-var SongsList = require('./components/songs-list');
+"use strict";
 
-var Player = React.createClass({displayName: "Player",
+var React = require("react");
+var Reflux = require("reflux");
+var actions = require("./lib/audio-actions");
+var audioStore = require("./lib/audio-store");
+var songStore = require("./lib/song-store");
+var Progress = require("./components/progress");
+var PlayerTime = require("./components/player-time");
+var SongsList = require("./components/songs-list");
+var SongUpload = require("./components/song-upload");
 
-	mixins: [Reflux.listenTo(store, 'forceUpdate')],
+var Player = React.createClass({
+	displayName: "Player",
 
-	changeTempo:function(value) {
+	mixins: [Reflux.listenTo(audioStore, "forceUpdate")],
+
+	changeTempo: function changeTempo(value) {
 		actions.changeTempo(value + 0.5);
 	},
 
-	changePosition:function(position) {
-		actions.changePosition(position * store.duration);
+	changePosition: function changePosition(position) {
+		actions.changePosition(position * audioStore.duration);
 	},
 
-	render:function() {
-		return React.createElement("div", {className: "player"}, 
-			React.createElement(PlayerTime, {current: store.current, duration: store.duration, onChange: this.changePosition}), 
-			React.createElement("div", {className: "player__footer"}, 
-				React.createElement("div", {className: "player__controls"}, 
-					store.isPlay ?
-						React.createElement("i", {className: "icon-pause", onClick: actions.pause}) :
-						React.createElement("i", {className: "icon-play", onClick: actions.play}), 
-					
-					React.createElement(Progress, {progress: store.tempo - 0.5, onChange: this.changeTempo}), 
-					React.createElement("span", {className: "player__tempo"}, store.tempo.toFixed(1))
+	render: function render() {
+		return React.createElement(
+			"div",
+			{ className: "player" },
+			React.createElement(PlayerTime, { current: audioStore.current, duration: audioStore.duration, onChange: this.changePosition }),
+			React.createElement(
+				"div",
+				{ className: "player__footer" },
+				React.createElement(
+					"div",
+					{ className: "player__controls" },
+					audioStore.isPlay ? React.createElement("i", { className: "icon-pause", onClick: actions.pause }) : React.createElement("i", { className: "icon-play", onClick: actions.play })
+				),
+				React.createElement(
+					"div",
+					{ className: "player__tempo" },
+					React.createElement(
+						"span",
+						null,
+						"Tempo"
+					),
+					React.createElement(Progress, { progress: audioStore.tempo - 0.5, onChange: this.changeTempo }),
+					React.createElement(
+						"span",
+						null,
+						audioStore.tempo.toFixed(1)
+					)
+				),
+				React.createElement(
+					"div",
+					{ className: "player__file" },
+					React.createElement(
+						SongUpload,
+						{ small: true },
+						"Upload new song"
+					)
 				)
 			)
 		);
@@ -37,34 +67,62 @@ var Player = React.createClass({displayName: "Player",
 
 });
 
-var App = React.createClass({displayName: "App",
-	render:function() {
-		return React.createElement("div", {className: "app"}, 
-			React.createElement(SongsList, null), 
+var App = React.createClass({
+	displayName: "App",
+
+	mixins: [Reflux.listenTo(songStore, "forceUpdate")],
+	render: function render() {
+		if (!songStore.ready) {
+			return null;
+		}
+		if (songStore.isEmpty()) {
+			return React.createElement(
+				"div",
+				{ className: "app" },
+				React.createElement(
+					"div",
+					{ className: "center" },
+					React.createElement(
+						SongUpload,
+						null,
+						"Upload song"
+					)
+				)
+			);
+		}
+		return React.createElement(
+			"div",
+			{ className: "app" },
+			React.createElement(SongsList, null),
 			React.createElement(Player, null)
 		);
 	}
 });
 
-window.addEventListener('keyup', function (e) {
+window.addEventListener("keyup", function (e) {
 	var node = e.target.nodeName;
-	if (node === 'INPUT') {
+	if (node === "INPUT") {
 		return;
 	}
 	switch (e.keyCode) {
-		case 32: actions.pausePlay(); break;
-		case 38: actions.speedUp(); break;
-		case 40: actions.slowDown(); break;
-		case 37: actions.jumpBack(); break;
-		case 39: actions.jumpForward(); break;
+		case 32:
+			actions.pausePlay();break;
+		case 38:
+			actions.speedUp();break;
+		case 40:
+			actions.slowDown();break;
+		case 37:
+			actions.jumpBack();break;
+		case 39:
+			actions.jumpForward();break;
 	}
 });
 
-window.addEventListener('DOMContentLoaded', function () {
+window.addEventListener("DOMContentLoaded", function () {
 	React.render(React.createElement(App, null), document.body);
 });
 
-},{"./components/player-time":178,"./components/progress":179,"./components/songs-list":180,"./lib/audio-actions":182,"./lib/audio-store":183,"react":159,"reflux":160}],2:[function(require,module,exports){
+},{"./components/player-time":178,"./components/progress":179,"./components/song-upload":180,"./components/songs-list":181,"./lib/audio-actions":183,"./lib/audio-store":184,"./lib/song-store":186,"react":159,"reflux":160}],2:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -22263,42 +22321,60 @@ exports.throwIf = function(val,msg){
 };
 
 },{"eventemitter3":161}],178:[function(require,module,exports){
-var React = require('react');
-var Progress = require('./progress');
-var formatTime = require('../lib/format-time');
+"use strict";
 
-module.exports = React.createClass({displayName: "exports",
-	render:function() {
-		return React.createElement("div", {className: "time"}, 
-			React.createElement(Progress, {progress: this.props.current/this.props.duration, onChange: this.props.onChange}), 
-			React.createElement("div", {className: "time__current"}, formatTime(this.props.current)), 
-			React.createElement("div", {className: "time__duration"}, formatTime(this.props.duration))
+var React = require("react");
+var Progress = require("./progress");
+var formatTime = require("../lib/format-time");
+
+module.exports = React.createClass({
+	displayName: "exports",
+
+	render: function render() {
+		return React.createElement(
+			"div",
+			{ className: "time" },
+			React.createElement(Progress, { progress: this.props.current / this.props.duration, onChange: this.props.onChange }),
+			React.createElement(
+				"div",
+				{ className: "time__current" },
+				formatTime(this.props.current)
+			),
+			React.createElement(
+				"div",
+				{ className: "time__duration" },
+				formatTime(this.props.duration)
+			)
 		);
 	}
 });
 
-},{"../lib/format-time":184,"./progress":179,"react":159}],179:[function(require,module,exports){
-var React = require('react');
+},{"../lib/format-time":185,"./progress":179,"react":159}],179:[function(require,module,exports){
+"use strict";
+
+var React = require("react");
 
 module.exports = React.createClass({
-	displayName: 'progress',
+	displayName: "progress",
 	propTypes: {
 		onChange: React.PropTypes.func.isRequired,
 		onContextClick: React.PropTypes.func
 	},
-	render:function() {
-		var progress = (this.props.progress * 100) + '%';
-		return React.createElement("div", {className: "progress", onClick: this.onClick, onContextMenu: this.onContext}, 
-			React.createElement("div", {className: "progress__total"}), 
-			React.createElement("div", {className: "progress__done", style: {width: progress}}), 
-			React.createElement("div", {className: "progress__cursor", style: {left: progress}})
+	render: function render() {
+		var progress = this.props.progress * 100 + "%";
+		return React.createElement(
+			"div",
+			{ className: "progress", onClick: this.onClick, onContextMenu: this.onContext },
+			React.createElement("div", { className: "progress__total" }),
+			React.createElement("div", { className: "progress__done", style: { width: progress } }),
+			React.createElement("div", { className: "progress__cursor", style: { left: progress } })
 		);
 	},
 
-	onClick:function(e) {
+	onClick: function onClick(e) {
 		this.props.onChange(e.nativeEvent.offsetX / this.getDOMNode().offsetWidth);
 	},
-	onContext:function(e) {
+	onContext: function onContext(e) {
 		if (this.props.onContextClick) {
 			e.preventDefault();
 			this.props.onContextClick(e.nativeEvent.offsetX / this.getDOMNode().offsetWidth);
@@ -22307,130 +22383,301 @@ module.exports = React.createClass({
 });
 
 },{"react":159}],180:[function(require,module,exports){
-var React = require('react');
-var Reflux = require('reflux');
-var store= require('../lib/song-store');
-var actions = require('../lib/audio-actions');
-var formatTime = require('../lib/format-time');
-var Input = require('./updatable-input');
+"use strict";
 
-var Riff = React.createClass({displayName: "Riff",
-	getInitialState:function() {
-		return {editable: false};
-	},
-	update:function(prop) {
-		return function(value)  {
-			var data = {
-				index: this.props.riff.index,
-				songId: this.props.song.id
-			};
-			data[prop] = value;
-			actions.updateRiff(data);
-		}.bind(this);
-	},
-	render:function() {
-		var riff = this.props.riff;
+var React = require("react");
+var actions = require("../lib/audio-actions");
 
-		return React.createElement("tr", {onClick: this.playRiff}, 
-			React.createElement("td", {className: "riffs__index"}, 
-				React.createElement("span", null, riff.index + 1), 
-				React.createElement("i", {className: "icon-play small"})
-			), 
-			this.state.editable ?
-				React.createElement("td", null, React.createElement(Input, {onChange: this.update('name'), value: this.name})) :
-				riff.name ?
-					React.createElement("td", null, riff.name) :
-					React.createElement("td", {className: "secondary-text"}, "Unnamed section"), 
-			
-			React.createElement("td", null, 
-				this.state.editable ?
-					React.createElement(Input, {onChange: this.update('from'), value: riff.from}) :
-					formatTime(riff.from)
-				
-			), 
-			React.createElement("td", null, 
-				this.state.editable ?
-					React.createElement(Input, {onChange: this.update('to'), value: riff.to}) :
-					formatTime(riff.to)
-				
-			), 
-			React.createElement("td", null, 
-				this.state.editable ?
-					React.createElement("i", {onClick: this.edit, className: "icon-save"}) :
-					React.createElement("i", {onClick: this.edit, className: "icon-edit"})
-				
+module.exports = React.createClass({
+	displayName: "exports",
+
+	render: function render() {
+		var className = "file-input";
+		if (this.props.small) {
+			className += " small";
+		}
+		return React.createElement(
+			"label",
+			{ className: className },
+			React.createElement("input", { type: "file", onChange: this.onChange, accept: ".mp3" }),
+			React.createElement(
+				"div",
+				null,
+				React.createElement(
+					"div",
+					{ className: "file-input__icon" },
+					"+"
+				),
+				React.createElement(
+					"div",
+					{ className: "file-input__text" },
+					this.props.children
+				)
 			)
 		);
 	},
-	playRiff:function(e) {
+	onChange: function onChange(e) {
+		actions.setFile(e.target.files[0]);
+	}
+
+});
+
+},{"../lib/audio-actions":183,"react":159}],181:[function(require,module,exports){
+"use strict";
+
+var React = require("react");
+var Reflux = require("reflux");
+var store = require("../lib/song-store");
+var actions = require("../lib/audio-actions");
+var formatTime = require("../lib/format-time");
+var Input = require("./updatable-input");
+
+var Riff = React.createClass({
+	displayName: "Riff",
+
+	getInitialState: function getInitialState() {
+		return { editable: false };
+	},
+	update: function update(prop) {
+		var _this = this;
+
+		return function (value) {
+			var data = {
+				index: _this.props.riff.index,
+				songId: _this.props.song.id
+			};
+			data[prop] = value;
+			actions.updateRiff(data);
+		};
+	},
+	render: function render() {
+		var riff = this.props.riff;
+
+		return React.createElement(
+			"tr",
+			{ onClick: this.playRiff },
+			React.createElement(
+				"td",
+				null,
+				React.createElement("i", { className: "icon-play small" })
+			),
+			React.createElement(
+				"td",
+				{ className: "riffs__index" },
+				React.createElement("i", { onClick: this.deleteRiff, className: "icon-delete" }),
+				React.createElement(
+					"span",
+					null,
+					riff.index + 1
+				)
+			),
+			this.state.editable ? React.createElement(
+				"td",
+				null,
+				React.createElement(Input, { onChange: this.update("name"), value: this.name })
+			) : riff.name ? React.createElement(
+				"td",
+				null,
+				riff.name
+			) : React.createElement(
+				"td",
+				{ className: "secondary-text" },
+				"Unnamed section"
+			),
+			React.createElement(
+				"td",
+				null,
+				this.state.editable ? React.createElement(Input, { onChange: this.update("from"), value: riff.from }) : formatTime(riff.from)
+			),
+			React.createElement(
+				"td",
+				null,
+				this.state.editable ? React.createElement(Input, { onChange: this.update("to"), value: riff.to }) : formatTime(riff.to)
+			),
+			React.createElement(
+				"td",
+				null,
+				this.state.editable ? React.createElement("i", { onClick: this.edit, className: "icon-save" }) : React.createElement("i", { onClick: this.edit, className: "icon-edit" })
+			)
+		);
+	},
+	deleteRiff: function deleteRiff(e) {
+		e.stopPropagation();
+		actions.deleteRiff({
+			songId: this.props.song.id,
+			riff: this.props.riff
+		});
+	},
+	playRiff: function playRiff(e) {
 		actions.playRiff({
 			song: this.props.song,
 			riff: this.props.riff
 		});
 	},
-	edit:function(e) {
+	edit: function edit(e) {
 		e.stopPropagation();
-		this.setState({editable: !this.state.editable});
+		this.setState({ editable: !this.state.editable });
 	}
 });
 
-var Riffs = React.createClass({displayName: "Riffs",
-	render:function() {
+var Riffs = React.createClass({
+	displayName: "Riffs",
+
+	render: function render() {
+		var _this = this;
+
 		if (!this.props.riffs.length) {
-			return React.createElement("div", null, 
-				React.createElement("div", {className: "secondary-text"}, "There is not sections yet"), 
-				React.createElement("span", {className: "call-to-action", onClick: this.addRiff}, "Add section")
+			return React.createElement(
+				"div",
+				null,
+				React.createElement(
+					"div",
+					{ className: "secondary-text" },
+					"There is not sections yet"
+				),
+				React.createElement(
+					"span",
+					{ className: "call-to-action", onClick: this.addRiff },
+					"Add section"
+				)
 			);
 		}
-		return React.createElement("table", {className: "riffs"}, 
-			React.createElement("thead", null, 
-				React.createElement("tr", null, 
-					React.createElement("td", {className: "riffs__index-title", onClick: this.addRiff}, "+"), 
-					React.createElement("td", {className: "riffs__name-title"}, " ", React.createElement("strong", null, "NAME"), " "), 
-					React.createElement("td", {className: "riffs__time-title"}, " ", React.createElement("strong", null, "FROM"), " "), 
-					React.createElement("td", {className: "riffs__time-title"}, " ", React.createElement("strong", null, "TO"), " "), 
+		return React.createElement(
+			"table",
+			{ className: "riffs" },
+			React.createElement(
+				"thead",
+				null,
+				React.createElement(
+					"tr",
+					null,
+					React.createElement(
+						"td",
+						{ className: "riffs__add", onClick: this.addRiff },
+						"+"
+					),
+					React.createElement("td", { className: "riffs__index-title" }),
+					React.createElement(
+						"td",
+						{ className: "riffs__name-title" },
+						" ",
+						React.createElement(
+							"strong",
+							null,
+							"NAME"
+						),
+						" "
+					),
+					React.createElement(
+						"td",
+						{ className: "riffs__time-title" },
+						" ",
+						React.createElement(
+							"strong",
+							null,
+							"FROM"
+						),
+						" "
+					),
+					React.createElement(
+						"td",
+						{ className: "riffs__time-title" },
+						" ",
+						React.createElement(
+							"strong",
+							null,
+							"TO"
+						),
+						" "
+					),
 					React.createElement("td", null)
 				)
-			), 
-			React.createElement("tbody", null, 
-				this.props.riffs.map(function(riff)  {return React.createElement(Riff, {riff: riff, song: this.props.song});}.bind(this))
+			),
+			React.createElement(
+				"tbody",
+				null,
+				this.props.riffs.map(function (riff) {
+					return React.createElement(Riff, { riff: riff, song: _this.props.song });
+				})
 			)
 		);
 	},
 
-	addRiff:function() {
+	addRiff: function addRiff() {
 		actions.addRiff(this.props.song.id);
 	}
 
 });
 
-var Song = React.createClass({displayName: "Song",
-	getInitialState:function() {
+var Song = React.createClass({
+	displayName: "Song",
+
+	getInitialState: function getInitialState() {
 		return {
 			editable: false,
-			name: this.props.song.name
+			riffs: this.props.song.riffs
 		};
 	},
-	render:function() {
-		return React.createElement("div", {onClick: this.changeSong, className: 'song-item ' + (this.state.editable && 'editable' || '')}, 
-			React.createElement("i", {className: "song-item__play icon-play small"}), 
-			React.createElement("span", null, this.state.name), 
-			React.createElement("div", {className: "song-item__collapse", onClick: this.changeEditable}, 
-				this.state.editable ?
-					React.createElement("i", {className: "mr icon-collapse off"}) :
-					React.createElement("i", {className: "mr icon-collapse"})
-				
-			), 
-			this.state.editable && React.createElement("div", {className: "song-item__options", onClick: this.stopPropagation}, 
-				React.createElement(Riffs, {riffs: this.props.song.riffs, song: this.props.song})
+	componentWillReceiveProps: function componentWillReceiveProps(props) {
+		this.setState({
+			riffs: props.song.riffs,
+			editable: props.song.riffs.length ? this.state.editable : false
+		});
+	},
+	render: function render() {
+		return React.createElement(
+			"div",
+			{ onClick: this.changeSong, className: "song-item " + (this.state.editable && "editable" || "") },
+			React.createElement("i", { className: "song-item__play icon-play small" }),
+			React.createElement(
+				"span",
+				{ className: "song-item__name" },
+				this.props.song.name
+			),
+			this.state.editable ? React.createElement(
+				"div",
+				{ className: "song-item__collapse", onClick: this.close },
+				"Collapse"
+			) : this.state.riffs.length ? React.createElement(
+				"div",
+				{ className: "song-item__collapse", onClick: this.open },
+				"Open"
+			) : React.createElement(
+				"div",
+				{ className: "song-item__collapse", onClick: this.addRiff },
+				"Add section"
+			),
+			this.state.editable && React.createElement(
+				"div",
+				{ className: "song-item__options", onClick: this.stopPropagation },
+				React.createElement(Riffs, { riffs: this.state.riffs, song: this.props.song })
 			)
 		);
 	},
 
-	deleteItem:function() {
+	addRiff: function addRiff(e) {
+		e.stopPropagation();
+		actions.addRiff(this.props.song.id);
+		this.setState({
+			editable: true,
+			riffs: this.state.riffs.concat({})
+		});
+	},
+
+	open: function open(e) {
+		e.stopPropagation();
+		this.setState({ editable: true });
+	},
+
+	close: function close(e) {
+		e.stopPropagation();
+		this.setState({ editable: false });
+	},
+
+	deleteItem: function deleteItem() {
 		actions.deleteSong(this.props.song.id);
 	},
-	updateName:function(name) {
+	updateName: function updateName(name) {
 		actions.changeName({
 			id: this.props.song.id,
 			name: name
@@ -22440,95 +22687,95 @@ var Song = React.createClass({displayName: "Song",
 			name: name
 		});
 	},
-	stopPropagation:function(e) {
+	stopPropagation: function stopPropagation(e) {
 		e.stopPropagation();
 	},
-	changeEditable:function(e) {
-		e.stopPropagation();
-		this.setState({editable: !this.state.editable});
-	},
-	changeSong:function() {
+	changeSong: function changeSong() {
 		actions.changeSong(this.props.song);
 	}
 });
 
 module.exports = React.createClass({
-	displayName: 'SongsList',
-	mixins: [Reflux.listenTo(store, 'forceUpdate')],
-	render:function() {
-		return React.createElement("div", {className: "songs-list"}, 
-			React.createElement("div", {className: "songs-list__head"}, 
-				React.createElement("label", {className: "file-input"}, 
-					React.createElement("input", {type: "file", onChange: this.onChange}), 
-					React.createElement("div", null, "+ upload file")
-				)
-			), 
-			React.createElement("div", {className: "songs-list__list"}, 
-				store.songs.map(function(song, key)  {return React.createElement(Song, {key: song.id, song: song});})
+	displayName: "SongsList",
+	mixins: [Reflux.listenTo(store, "forceUpdate")],
+	render: function render() {
+		return React.createElement(
+			"div",
+			{ className: "songs-list" },
+			React.createElement(
+				"div",
+				{ className: "songs-list__scroll" },
+				store.songs.map(function (song, key) {
+					return React.createElement(Song, { key: song.id, song: song });
+				})
 			)
 		);
-	},
-	onChange:function(e) {
-		actions.setFile(e.target.files[0]);
 	}
 });
 
-},{"../lib/audio-actions":182,"../lib/format-time":184,"../lib/song-store":185,"./updatable-input":181,"react":159,"reflux":160}],181:[function(require,module,exports){
-var React = require('react');
+},{"../lib/audio-actions":183,"../lib/format-time":185,"../lib/song-store":186,"./updatable-input":182,"react":159,"reflux":160}],182:[function(require,module,exports){
+"use strict";
+
+var React = require("react");
 
 module.exports = React.createClass({
-	displayName: 'UpdatableInput',
-	getInitialState:function() {
-		return {value: this.props.value, initialValue: this.props.value};
+	displayName: "UpdatableInput",
+	getInitialState: function getInitialState() {
+		return { value: this.props.value, initialValue: this.props.value };
 	},
-	componentWillReceiveProps:function($__0) {var value=$__0.value;
+	componentWillReceiveProps: function componentWillReceiveProps(_ref) {
+		var value = _ref.value;
+
 		if (value !== this.state.initialValue) {
-			this.setState({value: value, initialValue: value});
+			this.setState({ value: value, initialValue: value });
 		}
 	},
-	onChange:function(e) {
-		this.setState({value: e.target.value});
+	onChange: function onChange(e) {
+		this.setState({ value: e.target.value });
 	},
-	onBlur:function(e) {
-		this.setState({value: e.target.value}, function()  {
-			this.props.onChange && this.props.onChange(this.state.value);
-		}.bind(this));
+	onBlur: function onBlur(e) {
+		var _this = this;
+
+		this.setState({ value: e.target.value }, function () {
+			_this.props.onChange && _this.props.onChange(_this.state.value);
+		});
 	},
-	onKeyUp:function(e) {
+	onKeyUp: function onKeyUp(e) {
 		if (e.keyCode === 13 && this.props.onChange) {
 			this.props.onChange(this.state.value);
 		}
 	},
-	onClick:function(e) {
+	onClick: function onClick(e) {
 		e.stopPropagation();
 	},
-	render:function() {
+	render: function render() {
 		return React.createElement("input", {
-			autoFocus: this.props.autoFocus, 
-			className: this.props.className, 
-			placeholder: this.props.placeholder, 
-			type: "text", 
-			value: this.state.value, 
-			onChange: this.onChange, 
-			onClick: this.onClick, 
-			onBlur: this.onBlur, 
-			onKeyUp: this.onKeyUp}
-		);
+			autoFocus: this.props.autoFocus,
+			className: this.props.className,
+			placeholder: this.props.placeholder,
+			type: "text",
+			value: this.state.value,
+			onChange: this.onChange,
+			onClick: this.onClick,
+			onBlur: this.onBlur,
+			onKeyUp: this.onKeyUp
+		});
 	}
 });
 
+},{"react":159}],183:[function(require,module,exports){
+"use strict";
 
-},{"react":159}],182:[function(require,module,exports){
-var Reflux = require('reflux');
+var Reflux = require("reflux");
 var audio = new Audio();
 var currentRiff;
 
 var actions = Reflux.createActions({
 	setFile: {
-		children: ['completed']
+		children: ["completed"]
 	},
 	changePosition: {
-		children: ['completed']
+		children: ["completed"]
 	},
 	addRiff: {},
 	updateRiff: {},
@@ -22544,13 +22791,14 @@ var actions = Reflux.createActions({
 	pausePlay: {},
 	changeDuration: {},
 	changeSong: {},
-	playRiff: {}
+	playRiff: {},
+	deleteRiff: {}
 });
 
-audio.addEventListener('loadedmetadata', function()  {
+audio.addEventListener("loadedmetadata", function () {
 	actions.changeDuration(audio.duration);
 });
-audio.addEventListener('timeupdate', function()  {
+audio.addEventListener("timeupdate", function () {
 	var time = audio.currentTime;
 	if (currentRiff && time > currentRiff.to) {
 		audio.currentTime = currentRiff.from;
@@ -22594,12 +22842,17 @@ actions.pausePlay.listen(function () {
 });
 
 actions.setFile.listen(function (file) {
+	var _this = this;
+
 	if (!file) {
 		return;
 	}
+	console.log(file);
 	var reader = new FileReader();
 	reader.onerror = console.error.bind(console);
-	reader.onload = function(e)  {return this.completed(e.target.result);}.bind(this);
+	reader.onload = function (e) {
+		return _this.completed(e.target.result);
+	};
 	reader.readAsDataURL(file);
 });
 
@@ -22634,88 +22887,96 @@ actions.playRiff.listen(function (data) {
 
 module.exports = actions;
 
-},{"reflux":160}],183:[function(require,module,exports){
-var Reflux = require('reflux');
-var actions = require('./audio-actions');
+},{"reflux":160}],184:[function(require,module,exports){
+"use strict";
+
+var Reflux = require("reflux");
+var actions = require("./audio-actions");
 
 module.exports = Reflux.createStore({
-	init:function() {
+	init: function init() {
 		this.listenToMany(actions);
-		this.listenTo(actions.changePosition.completed, 'onChangePositionCompleted');
+		this.listenTo(actions.changePosition.completed, "onChangePositionCompleted");
 		this.duration = 0;
 		this.tempo = 1;
 		this.current = 0;
 		this.isPlay = false;
 	},
 
-   	onChangeDuration:function(duration) {
-   		this.duration = duration;
-   		this.trigger();
-   	},
+	onChangeDuration: function onChangeDuration(duration) {
+		this.duration = duration;
+		this.trigger();
+	},
 
-   	onChangePositionCompleted:function(current) {
-   		this.current = current;
-   		this.trigger();
-   	},
+	onChangePositionCompleted: function onChangePositionCompleted(current) {
+		this.current = current;
+		this.trigger();
+	},
 
-	onPause:function() {
+	onPause: function onPause() {
 		this.isPlay = false;
 		this.trigger();
 	},
-	onPlay:function() {
+	onPlay: function onPlay() {
 		this.isPlay = true;
 		this.trigger();
 	},
-	onChangeTempo:function(tempo) {
+	onChangeTempo: function onChangeTempo(tempo) {
 		this.tempo = tempo;
 		this.trigger();
 	}
 });
 
-},{"./audio-actions":182,"reflux":160}],184:[function(require,module,exports){
+},{"./audio-actions":183,"reflux":160}],185:[function(require,module,exports){
+"use strict";
+
 module.exports = function formatTime(time) {
 	var minutes = Math.floor(time / 60);
 	var seconds = Math.floor(time % 60);
 	if (minutes >= 1) {
-		minutes = minutes >= 10 ? String(minutes) : ('0' + minutes);
+		minutes = minutes >= 10 ? String(minutes) : "0" + minutes;
 	} else {
-		minutes = '00';
+		minutes = "00";
 	}
-	seconds = seconds >= 10 ? String(seconds) : ('0' + seconds);
-	return minutes + ':' + seconds;
+	seconds = seconds >= 10 ? String(seconds) : "0" + seconds;
+	return minutes + ":" + seconds;
 };
 
-},{}],185:[function(require,module,exports){
-var Reflux = require('reflux');
-var actions = require('./audio-actions');
-var IDb =  require('idb-wrapper');
-var extend = require('extend');
+},{}],186:[function(require,module,exports){
+"use strict";
+
+var Reflux = require("reflux");
+var actions = require("./audio-actions");
+var IDb = require("idb-wrapper");
+var extend = require("extend");
 
 var dbStore = new IDb({
 	keyPath: null,
-	storeName: 'songs',
-	onStoreReady: function () {
+	storeName: "songs",
+	onStoreReady: function onStoreReady() {
 		fluxStore.updateFromDb();
 	},
 	onError: console.error.bind(console)
 });
 
 var fluxStore = Reflux.createStore({
-	init:function() {
-		this.listenTo(actions.setFile.completed, 'onUrlCreated');
+	init: function init() {
+		this.listenTo(actions.setFile.completed, "onUrlCreated");
 		this.listenToMany(actions);
+		this.ready = false;
 		this.songs = [];
 	},
 
-	updateFromDb:function() {
+	updateFromDb: function updateFromDb() {
+		this.ready = true;
 		dbStore.getAll(this.setSongs);
 	},
 
-	onDeleteSong:function(id) {
+	onDeleteSong: function onDeleteSong(id) {
 		dbStore.remove(id, this.updateFromDb);
 	},
 
-	updateCurrentSong:function(key, value) {
+	updateCurrentSong: function updateCurrentSong(key, value) {
 		var song = this.currentSong;
 		if (!song) {
 			return;
@@ -22725,7 +22986,7 @@ var fluxStore = Reflux.createStore({
 		dbStore.put(song.id, song);
 	},
 
-	updateById:function(id, key, value) {
+	updateById: function updateById(id, key, value) {
 		var song = this.getById(id);
 		if (!song) {
 			return;
@@ -22735,44 +22996,52 @@ var fluxStore = Reflux.createStore({
 		this.trigger();
 	},
 
-	getById:function(id) {
-		return this.songs.filter(function(song)  {return song.id === id;})[0];
+	getById: function getById(id) {
+		return this.songs.filter(function (song) {
+			return song.id === id;
+		})[0];
 	},
 
-	onChangeName:function(data) {
-		this.updateById(data.id, 'name', data.name);
+	onChangeName: function onChangeName(data) {
+		this.updateById(data.id, "name", data.name);
 	},
 
-	onUrlCreated:function(src) {
-		this.updateCurrentSong('src', src);
+	onUrlCreated: function onUrlCreated(src) {
+		this.updateCurrentSong("src", src);
 	},
 
-	onAddRiff:function(id) {
+	onAddRiff: function onAddRiff(id) {
 		var riffs = this.getById(id).riffs;
 		var riff = {
-			name: '',
+			name: "",
 			from: 0,
 			to: 0,
 			index: riffs.length
 		};
-		this.updateById(id, 'riffs', riffs.concat(riff));
+		this.updateById(id, "riffs", riffs.concat(riff));
 	},
 
-	onUpdateRiff:function(data) {
+	onDeleteRiff: function onDeleteRiff(data) {
+		var riffs = this.getById(data.songId).riffs.filter(function (riff) {
+			return riff !== data.riff;
+		});
+
+		this.updateById(data.songId, "riffs", riffs);
+	},
+
+	onUpdateRiff: function onUpdateRiff(data) {
 		var riffs = this.getById(data.songId).riffs;
 		extend(riffs[data.index], data);
-		this.updateById(data.songId, 'riffs', riffs);
+		this.updateById(data.songId, "riffs", riffs);
 	},
 
-	onChangeSong:function(song) {
+	onChangeSong: function onChangeSong(song) {
 		this.currentSong = song;
 		this.trigger();
 	},
 
-	onSetFile:function(file) {
-		var id = this.songs.length ?
-			this.songs.slice().pop().id + 1 :
-			1;
+	onSetFile: function onSetFile(file) {
+		var id = this.songs.length ? this.songs.slice().pop().id + 1 : 1;
 
 		var song = {
 			name: file.name,
@@ -22785,13 +23054,17 @@ var fluxStore = Reflux.createStore({
 		dbStore.put(id, song);
 	},
 
-	setSongs:function(songs) {
+	setSongs: function setSongs(songs) {
 		this.songs = songs;
 		this.trigger();
+	},
+
+	isEmpty: function isEmpty() {
+		return this.songs.length === 0;
 	}
 
 });
 
 module.exports = fluxStore;
 
-},{"./audio-actions":182,"extend":3,"idb-wrapper":4,"reflux":160}]},{},[1]);
+},{"./audio-actions":183,"extend":3,"idb-wrapper":4,"reflux":160}]},{},[1]);

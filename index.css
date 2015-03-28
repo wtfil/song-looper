@@ -1,33 +1,49 @@
+@font-face {
+  font-family: 'Open Sans Light';
+  src: url('fonts/OpenSans-Light.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Open Sans Semibold';
+  src: url('fonts/OpenSans-Semibold.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
 html,
 body {
   -webkit-tap-highlight-color: transparent;
   height: 100%;
   margin: 0;
-  font-family: Roboto, arial, sans-serif;
+  font-family: Open Sans Light;
   padding: 0;
   font-size: 14px;
-  color: #3f3f3f;
+  color: #a5a5a5;
+}
+body {
+  display: flex;
+  justify-content: center;
 }
 input[type=text] {
-  font-family: Roboto, arial, sans-serif;
+  font-family: Open Sans Light;
   font-size: 14px;
-  color: #3f3f3f;
+  color: #a5a5a5;
   -webkit-appearance: none;
   border-radius: 0;
-  border: 1px solid #aaaaaa;
+  border: 1px solid #eaeaea;
   box-sizing: border-box;
   padding: 5px;
 }
 input[type=text]:active,
 input[type=text]:focus {
-  border: 1px solid #ff9a5c;
+  border: 1px solid #a7ca3a;
   outline: 0;
 }
 button {
   -webkit-appearance: none;
-  border: 1px solid #aaaaaa;
+  border: 1px solid #eaeaea;
   border-radius: 3px;
-  font-family: Roboto, arial, sans-serif;
+  font-family: Open Sans Light;
   font-size: 14px;
   color: #999999;
   background: #f5f5f5;
@@ -45,6 +61,14 @@ button:active {
 .call-to-action:hover {
   text-decoration: underline;
 }
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
 .right {
   float: right;
 }
@@ -58,8 +82,9 @@ button:active {
   margin-left: 5px;
 }
 .app {
-  position: absolute;
+  position: relative;
   width: 100%;
+  max-width: 860px;
   bottom: 0;
   top: 0;
   box-sizing: border-box;
@@ -69,44 +94,52 @@ button:active {
   width: 100%;
   top: 0;
   bottom: 63px;
+  overflow: hidden;
+}
+.songs-list__scroll {
+  width: 100%;
+  height: 100%;
+  padding: 0 16px 16px 0;
   overflow: scroll;
 }
 .songs-list::-webkit-scrollbar {
   display: none;
 }
-.songs-list__head {
+.songs-list__center {
   padding: 10px 20px;
-}
-.songs-list__list {
-  background: #e5e5e5;
-  bottom: 0;
 }
 .song-item {
   cursor: pointer;
-  color: #3f3f3f;
-  padding: 10px 20px;
-  border-top: 1px solid #d9d9d9;
+  color: #a5a5a5;
+  padding: 20px;
   overflow: hidden;
   position: relative;
+  border-bottom: 1px solid #eaeaea;
 }
 .song-item__play {
-  margin-right: 10px;
-  visibility: hidden;
+  margin-right: 15px;
+  margin-top: 7px;
+  float: left;
+  display: block;
+}
+.song-item__name {
+  line-height: 26px;
 }
 .song-item__options {
   margin-top: 14px;
 }
 .song-item__collapse {
-  position: absolute;
-  right: 0;
-  top: 0;
-  padding: 10px 20px;
+  float: right;
+  padding: 5px;
+  width: 90px;
+  font-size: 10px;
+  text-align: center;
+  border-radius: 3px;
+  border: 1px dashed #b7b7b7;
 }
-.song-item:not(.editable):hover {
-  background: #f2f2f2;
-}
-.song-item:not(.editable):hover .song-item__play {
-  visibility: visible;
+.song-item:hover,
+.song-item.editable {
+  background: #f8f8fb;
 }
 .player {
   position: absolute;
@@ -118,17 +151,29 @@ button:active {
 .player__footer {
   margin-top: 3px;
   padding-bottom: 10px;
+  display: flex;
 }
 .player__controls {
-  float: left;
-  margin-top: 4px;
+  flex: 2;
+}
+.player__tempo {
+  flex: 1;
+}
+.player__tempo .progress {
+  width: 50%;
+  margin: 0 10px;
+  display: inline-block;
+}
+.player__file {
+  flex: 2;
+  text-align: right;
 }
 .player__controls .progress {
   display: inline-block;
   margin: 6px;
   width: 100px;
 }
-.player__tempo {
+.player__aatempo {
   line-height: 26px;
   margin-left: 10px;
   vertical-align: top;
@@ -147,7 +192,7 @@ button:active {
   left: 2px;
   width: 22px;
   height: 22px;
-  background: #5a5a5a;
+  background: #b7b7b7;
 }
 .progress {
   height: 3px;
@@ -156,10 +201,10 @@ button:active {
 }
 .progress__total {
   height: 100%;
-  background: #eaeaea;
+  background: #eeeeee;
 }
 .progress__done {
-  background: #ff9a5c;
+  background: #a7ca3a;
   margin-top: -3px;
   width: 0;
   height: 100%;
@@ -169,7 +214,7 @@ button:active {
   height: 12px;
   width: 12px;
   border-radius: 6px;
-  background: #ff9a5c;
+  background: #a7ca3a;
   margin-top: -7px;
   margin-left: -6px;
   position: absolute;
@@ -183,7 +228,7 @@ button:active {
   margin-top: -8px;
   margin-left: -1px;
   position: absolute;
-  background: #ff9a5c;
+  background: #a7ca3a;
 }
 .time__current,
 .time__duration {
@@ -208,7 +253,7 @@ button:active {
   opacity: 0;
 }
 .time__current {
-  background: #ff9a5c;
+  background: #a7ca3a;
   left: 0;
   color: white;
 }
@@ -241,8 +286,15 @@ button:active {
   border-spacing: 0;
 }
 .riffs td {
-  height: 25px;
-  padding: 3px 6px;
+  height: 41px;
+  padding: 0 6px;
+  box-sizing: border-box;
+  line-height: 0;
+}
+.riffs__add {
+  color: #a7ca3a;
+  font-size: 24px;
+  font-weight: bold;
 }
 .riffs__index-title {
   width: 10%;
@@ -259,28 +311,55 @@ button:active {
 .riffs__index {
   min-width: 25px;
 }
-.riffs__index .icon-play {
-  display: none;
-}
-.riffs tr:hover .riffs__index .icon-play {
-  display: block;
-}
 .riffs tr:hover .riffs__index span {
   display: none;
 }
-.riffs tr:not(:hover) .icon-edit {
+.riffs tr:not(:hover) .icon-edit,
+.riffs tr:not(:hover) .icon-play,
+.riffs tr:not(:hover) .icon-delete {
   visibility: hidden;
 }
 .riffs tbody tr:hover {
-  background: #f2f2f2;
+  background: #eeeeee;
 }
 .file-input {
   font-size: 24px;
   cursor: pointer;
-  color: #5a5a5a;
+  color: #a5a5a5;
+  display: inline-block;
+}
+.file-input:hover {
+  color: #111111;
+}
+.file-input__icon {
+  line-height: 1;
+  font-size: 36px;
+  float: left;
+  color: #a7ca3a;
+  position: relative;
+}
+.file-input__icon:after {
+  content: '♪';
+  font-size: 14px;
+  top: 0;
+  right: 0;
+  position: absolute;
+}
+.file-input__text {
+  float: right;
+  margin-left: 4px;
 }
 .file-input input {
   display: none;
+}
+.file-input.small {
+  font-size: 18px;
+}
+.file-input.small .file-input__icon {
+  font-size: 24px;
+}
+.file-input.small .file-input__icon:after {
+  font-size: 9px;
 }
 .icon .mixin {
   width: 24px;
@@ -288,12 +367,13 @@ button:active {
   text-align: center;
   display: inline-block;
   cursor: pointer;
+  font-style: normal;
   -webkit-user-select: none;
 }
 .icon .mixin:after {
   font-style: normal;
   font-size: 24px;
-  color: #3f3f3f;
+  color: #a5a5a5;
 }
 .icon .mixin:hover {
   opacity: 0.8;
@@ -304,13 +384,14 @@ button:active {
   text-align: center;
   display: inline-block;
   cursor: pointer;
+  font-style: normal;
   -webkit-user-select: none;
   position: relative;
 }
 .icon-edit:after {
   font-style: normal;
   font-size: 24px;
-  color: #3f3f3f;
+  color: #a5a5a5;
 }
 .icon-edit:hover {
   opacity: 0.8;
@@ -320,14 +401,14 @@ button:active {
   display: inline-block;
   width: 6px;
   height: 18px;
-  background: #5a5a5a;
+  background: #b7b7b7;
   position: absolute;
   transform: rotate(45deg);
 }
 .icon-edit:after {
   content: '';
   border-top: 5px solid transparent;
-  border-left: 5px solid #5a5a5a;
+  border-left: 5px solid #b7b7b7;
   width: 0;
   height: 0;
   position: absolute;
@@ -335,25 +416,31 @@ button:active {
   left: 5px;
 }
 .icon-delete {
-  width: 24px;
-  height: 24px;
-  text-align: center;
-  display: inline-block;
-  cursor: pointer;
-  -webkit-user-select: none;
+  width: 7px;
+  display: block;
+  border-left: 2px solid transparent;
+  border-right: 2px solid transparent;
+  border-top: 10px solid #b7b7b7;
+  position: relative;
+}
+.icon-delete:before {
+  content: '';
+  bottom: 9px;
+  left: -3px;
+  right: -3px;
+  position: absolute;
+  height: 1px;
+  background: #b7b7b7;
 }
 .icon-delete:after {
-  font-style: normal;
-  font-size: 24px;
-  color: #3f3f3f;
-}
-.icon-delete:hover {
-  opacity: 0.8;
-}
-.icon-delete:after {
-  content: "+";
-  display: inline-block;
-  transform: rotate(45deg);
+  content: '';
+  position: absolute;
+  bottom: 8px;
+  left: 1px;
+  height: 3px;
+  width: 3px;
+  border-radius: 1px;
+  border: 1px solid #b7b7b7;
 }
 .icon-collapse {
   width: 24px;
@@ -361,10 +448,11 @@ button:active {
   text-align: center;
   display: inline-block;
   cursor: pointer;
+  font-style: normal;
   -webkit-user-select: none;
   width: 8px;
   height: 8px;
-  border: solid #ff9a5c;
+  border: solid #a7ca3a;
   border-width: 3px 0 0 3px;
   transform: rotate(225deg);
   margin-top: -2px;
@@ -373,7 +461,7 @@ button:active {
 .icon-collapse:after {
   font-style: normal;
   font-size: 24px;
-  color: #3f3f3f;
+  color: #a5a5a5;
 }
 .icon-collapse:hover {
   opacity: 0.8;
@@ -387,30 +475,32 @@ button:active {
   text-align: center;
   display: inline-block;
   cursor: pointer;
+  font-style: normal;
   -webkit-user-select: none;
   position: relative;
   width: 0;
   height: 0;
-  border-left: 20.64px solid #5a5a5a;
+  border-left: 16.8px solid #b7b7b7;
   border-top: 12px solid transparent;
   border-bottom: 12px solid transparent;
 }
 .icon-play:after {
   font-style: normal;
   font-size: 24px;
-  color: #3f3f3f;
+  color: #a5a5a5;
 }
 .icon-play:hover {
   opacity: 0.8;
 }
 .icon-play.small {
-  border-width: 7.2px 0 7.2px 12.384px;
+  border-width: 7.2px 0 7.2px 10.08px;
 }
 .icon-pause {
   width: 24px;
   text-align: center;
   display: inline-block;
   cursor: pointer;
+  font-style: normal;
   -webkit-user-select: none;
   position: relative;
   width: 20px;
@@ -419,7 +509,7 @@ button:active {
 .icon-pause:after {
   font-style: normal;
   font-size: 24px;
-  color: #3f3f3f;
+  color: #a5a5a5;
 }
 .icon-pause:hover {
   opacity: 0.8;
@@ -431,7 +521,7 @@ button:active {
   width: 4px;
   top: 2px;
   bottom: 2px;
-  background: #5a5a5a;
+  background: #b7b7b7;
 }
 .icon-pause:after {
   content: '';
@@ -440,7 +530,7 @@ button:active {
   width: 4px;
   top: 2px;
   bottom: 2px;
-  background: #5a5a5a;
+  background: #b7b7b7;
 }
 .icon-save {
   width: 24px;
@@ -448,12 +538,13 @@ button:active {
   text-align: center;
   display: inline-block;
   cursor: pointer;
+  font-style: normal;
   -webkit-user-select: none;
 }
 .icon-save:after {
   font-style: normal;
   font-size: 24px;
-  color: #3f3f3f;
+  color: #a5a5a5;
 }
 .icon-save:hover {
   opacity: 0.8;
@@ -463,7 +554,7 @@ button:active {
   display: block;
   width: 8px;
   height: 16px;
-  border: solid #ff9a5c;
+  border: solid #a7ca3a;
   border-width: 0 3px 3px 0;
   margin-left: 4px;
   transform: rotate(45deg);

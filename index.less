@@ -1,13 +1,29 @@
 @desktop:   ~"only screen and (min-width: 540px) and (max-width: 1199px)";
 @mobile:    ~"only screen and (max-width: 540px)";
 
-@bg-contrast: #ff9a5c;
-@bg-dark: #5a5a5a;
-@bg-light: #f2f2f2;
-@border-color: #aaa;
-@font-color: #3f3f3f;
+@bg-contrast: #a7ca3a;
+@bg-hover: #F8F8FB;
+@bg-dark: #B7B7B7;
+@bg-light: #eee;
+
+@font-color: #a5a5a5;
+@border-color: #eaeaea;
+@font-hover: #111;
 @secondary-text: #999;
-@font-family: Roboto, arial, sans-serif;
+
+@font-face {
+	font-family: 'Open Sans Light';
+	src: url('fonts/OpenSans-Light.ttf');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Open Sans Semibold';
+	src: url('fonts/OpenSans-Semibold.ttf');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-family: Open Sans Light;
 
 html, body {
 	-webkit-tap-highlight-color: transparent;
@@ -17,6 +33,10 @@ html, body {
 	padding: 0;
 	font-size: 14px;
 	color: @font-color;
+}
+body {
+	display: flex;
+	justify-content: center;
 }
 
 input[type=text] {
@@ -62,14 +82,24 @@ button {
 	text-decoration: underline;
 }
 
+.center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+	width: 100%;
+	position: absolute;
+}
+
 .right { float: right}
 .left { float: left}
 .mr { margin-right: 5px; }
 .ml { margin-left: 5px; }
 
 .app {
-	position: absolute;
+	position: relative;
 	width: 100%;
+	max-width: 860px;
 	bottom: 0;
 	top: 0;
 	box-sizing: border-box;
@@ -80,47 +110,54 @@ button {
 	width: 100%;
 	top: 0;
 	bottom: 63px;
-	overflow: scroll;
+	overflow: hidden;
+	&__scroll {
+		width: 100%;
+		height: 100%;
+		padding: 0 16px 16px 0;
+		overflow: scroll;
+	}
 	&::-webkit-scrollbar {
 		display: none;
 	}
-	&__head {
+	&__center {
 		padding: 10px 20px;
-	}
-	&__list {
-		background: #e5e5e5;
-		bottom: 0;
 	}
 }
 .song-item {
 	cursor: pointer;
 	color: @font-color;
-	padding: 10px 20px;
-	border-top: 1px solid #d9d9d9;
+	padding: 20px;
 	overflow: hidden;
 	position: relative;
+	border-bottom: 1px solid @border-color;
 
 	&__play {
-		margin-right: 10px;
-		visibility: hidden;
+		margin-right: 15px;
+		margin-top: 7px;
+		float: left;
+		display: block;
+	}
+	&__name {
+		line-height: 26px;
 	}
 	&__options {
 		margin-top: 14px;
 	}
 	&__collapse {
-		position: absolute;
-		right: 0;
-		top: 0;
-		padding: 10px 20px;
+		float: right;
+		padding: 5px;
+		width: 90px;
+		font-size: 10px;
+		text-align: center;
+		border-radius: 3px;
+		border: 1px dashed @bg-dark;
 	}
 
-	&:not(.editable):hover {
-		background: @bg-light;
+	&:hover,
+	&.editable {
+		background: @bg-hover;
 	}
-	&:not(.editable):hover &__play {
-		visibility: visible;
-	}
-
 
 }
 
@@ -137,22 +174,39 @@ button {
 	&__footer {
 		margin-top: 3px;
 		padding-bottom: 10px;
+		display: flex;
 	}
+
 	&__controls {
-		float: left;
-		margin-top: 4px;
+		flex: 2;
 	}
+
+	&__tempo {
+		flex: 1;
+		& .progress {
+			width: 50%;
+			margin: 0 10px;
+			display: inline-block;
+		}
+	}
+
+	&__file {
+		flex: 2;
+		text-align: right;
+	}
+
 	&__controls .progress {
 		display: inline-block;
 		margin: 6px;
 		width: 100px;
 	}
 
-	&__tempo {
+	&__aatempo {
 		line-height: @size;
 		margin-left: 10px;
 		vertical-align: top;
 	}
+
 
 	&__stop {
 		display: inline-block;
@@ -180,7 +234,7 @@ button {
 
 	&__total {
 		height: 100%;
-		background: #eaeaea;
+		background: @bg-light;
 	}
 	&__done {
 		background: @bg-contrast;
@@ -271,8 +325,15 @@ button {
 	table-layout: fixed;
 	border-spacing: 0;
 	& td {
-		height: 25px;
-		padding: 3px 6px;
+		height: 41px;
+		padding: 0 6px;
+		box-sizing: border-box;
+		line-height: 0;
+	}
+	&__add {
+		color: @bg-contrast;
+		font-size: 24px;
+		font-weight: bold;
 	}
 	&__index-title {
 		width: 10%;
@@ -288,21 +349,19 @@ button {
 	}
 	&__index {
 		min-width: 25px;
-		& .icon-play {
-			display: none;
-		}
 	}
 	& tr:hover &__index {
-		& .icon-play {
-			display: block;
-		}
 		& span {
 			display: none;
 		}
 	}
 
-	& tr:not(:hover) .icon-edit {
-		visibility: hidden;
+	& tr:not(:hover) {
+		& .icon-edit,
+		& .icon-play,
+		& .icon-delete {
+			visibility: hidden;
+		}
 	}
 
 	& tbody tr:hover {
@@ -313,9 +372,41 @@ button {
 .file-input {
 	font-size: 24px;
 	cursor: pointer;
-	color: @bg-dark;
+	color: @font-color;
+	display: inline-block;
+	&:hover {
+		color: @font-hover;
+	}
+	&__icon {
+		line-height: 1;
+		font-size: 36px;
+		float: left;
+		color: @bg-contrast;
+		position: relative;
+		&:after {
+			content: '♪';
+			font-size: 14px;
+			top: 0;
+			right: 0;
+			position: absolute;
+		}
+	}
+	&__text {
+		float: right;
+		margin-left: 4px;
+	}
 	& input {
 		display: none;
+	}
+
+	&.small {
+		font-size: 18px;
+	}
+	&.small &__icon {
+		font-size: 24px;
+	}
+	&.small &__icon:after {
+		font-size: 9px;
 	}
 }
 
@@ -328,6 +419,7 @@ button {
 		text-align: center;
 		display: inline-block;
 		cursor: pointer;
+		font-style: normal;
 		 -webkit-user-select: none;
 
 		&:after {
@@ -365,11 +457,31 @@ button {
 		}
 	}
 	&-delete {
-		.mixin;
+		width: 7px;
+		display: block;
+		border-left: 2px solid transparent;
+		border-right: 2px solid transparent;
+		border-top: 10px solid @bg-dark;
+		position: relative;
+
+		&:before {
+			content: '';
+			bottom: 9px;
+			left: -3px;
+			right: -3px;
+			position: absolute;
+			height: 1px;
+			background: @bg-dark;
+		}
 		&:after {
-			content: "+";
-			display: inline-block;
-			transform: rotate(45deg);
+			content: '';
+			position: absolute;
+			bottom: 8px;
+			left: 1px;
+			height: 3px;
+			width: 3px;
+			border-radius: 1px;
+			border: 1px solid @bg-dark;
 		}
 	}
 	&-collapse {
@@ -392,13 +504,13 @@ button {
 		width: 0;
 		height: 0;
 
-		border-left: @size*.86 solid @bg-dark;
+		border-left: @size*.7 solid @bg-dark;
 		border-top: @size*.5 solid transparent;
 		border-bottom: @size*.5 solid transparent;
 
 		&.small {
 			@small: @size * .6;
-			border-width: @small*.5 0 @small*.5 @small*.86;
+			border-width: @small*.5 0 @small*.5 @small*.7;
 		}
 	}
 
@@ -440,5 +552,4 @@ button {
 			transform: rotate(45deg);
 		}
 	}
-
 }
