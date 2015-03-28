@@ -8,9 +8,10 @@
   "scripts": {
     "start": "gulp dev",
     "deploy": "gulp deploy",
-    "test": "find public -name '*js'| grep -v _ | xargs jsxhint"
+    "test": "find public -name '*js'| grep -v build | xargs jsxhint"
   },
   "dependencies": {
+    "babelify": "^5.0.4",
     "browserify": "^6.1.0",
     "extend": "^2.0.0",
     "gulp": "^3.8.8",

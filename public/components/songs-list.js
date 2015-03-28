@@ -110,20 +110,28 @@ var Song = React.createClass({
 	getInitialState() {
 		return {
 			editable: false,
-			name: this.props.song.name
+			riffs: this.props.song.riffs
 		};
+	},
+	componentWillReceiveProps(props) {
+		this.setState({
+			riffs: props.song.riffs,
+			editable: props.song.riffs.length ? this.state.editable : false
+		});
 	},
 	render() {
 		return <div onClick={this.changeSong} className={'song-item ' + (this.state.editable && 'editable' || '')}>
 			<i className="song-item__play icon-play small"></i>
-			<span className="song-item__name">{this.state.name}</span>
+			<span className="song-item__name">{this.props.song.name}</span>
 
 			{this.state.editable ?
 				<div className="song-item__collapse" onClick={this.close}>Collapse</div> :
-				<div className="song-item__collapse" onClick={this.addRiff}>Add section</div>
+				this.state.riffs.length ?
+					<div className="song-item__collapse" onClick={this.open}>Open</div> :
+					<div className="song-item__collapse" onClick={this.addRiff}>Add section</div>
 			}
 			{this.state.editable && <div className="song-item__options" onClick={this.stopPropagation}>
-				<Riffs riffs={this.props.song.riffs} song={this.props.song} />
+				<Riffs riffs={this.state.riffs} song={this.props.song} />
 			</div>}
 		</div>;
 	},
@@ -131,8 +139,17 @@ var Song = React.createClass({
 	addRiff(e) {
 		e.stopPropagation();
 		actions.addRiff(this.props.song.id);
+		this.setState({
+			editable: true,
+			riffs: this.state.riffs.concat({})
+		});
+	},
+
+	open(e) {
+		e.stopPropagation();
 		this.setState({editable: true});
 	},
+
 	close(e) {
 		e.stopPropagation();
 		this.setState({editable: false});
@@ -164,7 +181,9 @@ module.exports = React.createClass({
 	mixins: [Reflux.listenTo(store, 'forceUpdate')],
 	render() {
 		return <div className="songs-list">
-			{store.songs.map((song, key) => <Song key={song.id} song={song}/>)}
+			<div className="songs-list__scroll">
+				{store.songs.map((song, key) => <Song key={song.id} song={song}/>)}
+			</div>
 		</div>;
 	}
 });

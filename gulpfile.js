@@ -5,7 +5,6 @@ var gutil = require('gulp-util');
 var browserify = require('browserify');
 var watchify = require('watchify');
 var server = require('http-server');
-var reactify = require('reactify');
 var fs = require('fs');
 
 var files = {
@@ -49,17 +48,14 @@ gulp.task('css-watch', ['css'], function () {
 	gulp.watch(files.css.src, ['css']);
 });
 
-function transform(file, opts) {
-	opts.es6 = true;
-	return reactify(file, opts);
-}
-
 gulp.task('js-watch', function () {
     var args = watchify.args;
     args.degub = true;
     var bundler = watchify(browserify(files.js.src, args));
 
-    bundler.transform(transform);
+    bundler
+    	.transform('babelify')
+    	.transform('reactify')
     bundler.on('update', rebundle);
 
     function onError(e) {

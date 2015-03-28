@@ -27,5 +27,6 @@ node_modules
 # Users Environment Variables
 .lock-wscript
 
-public/_index.js
+public/build.js
 public/index.css
+.publish

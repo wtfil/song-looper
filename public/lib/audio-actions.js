@@ -77,6 +77,7 @@ actions.setFile.listen(function (file) {
 	if (!file) {
 		return;
 	}
+	console.log(file);
 	var reader = new FileReader();
 	reader.onerror = console.error.bind(console);
 	reader.onload = (e) => this.completed(e.target.result);

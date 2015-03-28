@@ -110,7 +110,13 @@ button {
 	width: 100%;
 	top: 0;
 	bottom: 63px;
-	overflow: scroll;
+	overflow: hidden;
+	&__scroll {
+		width: 100%;
+		height: 100%;
+		padding: 0 16px 16px 0;
+		overflow: scroll;
+	}
 	&::-webkit-scrollbar {
 		display: none;
 	}
@@ -177,6 +183,11 @@ button {
 
 	&__tempo {
 		flex: 1;
+		& .progress {
+			width: 50%;
+			margin: 0 10px;
+			display: inline-block;
+		}
 	}
 
 	&__file {
