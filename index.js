@@ -31,9 +31,9 @@ var Player = React.createClass({
 					}
 				</div>
 				<div className="player__tempo">
-					<span>Tempo</span>
+					<span>Temp</span>
 					<Progress progress={audioStore.tempo - 0.5} onChange={this.changeTempo}/>
-					<span>{audioStore.tempo.toFixed(1)}</span>
+					<span>x{audioStore.tempo.toFixed(1)}</span>
 				</div>
 				<div className="player__file">
 					<SongUpload small>Upload new song</SongUpload>

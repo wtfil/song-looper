@@ -43,12 +43,13 @@ var Player = React.createClass({
 					React.createElement(
 						"span",
 						null,
-						"Tempo"
+						"Temp"
 					),
 					React.createElement(Progress, { progress: audioStore.tempo - 0.5, onChange: this.changeTempo }),
 					React.createElement(
 						"span",
 						null,
+						"x",
 						audioStore.tempo.toFixed(1)
 					)
 				),
