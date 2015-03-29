@@ -24,14 +24,14 @@ var Riff = React.createClass({
 
 		return <tr onClick={this.playRiff}>
 			<td>
-				<i className="icon-play small"></i>
+				{riff.active && <i className="icon-play small"></i>}
 			</td>
 			<td className="riffs__index">
 				<i onClick={this.deleteRiff} className="icon-delete"></i>
 				<span >{riff.index + 1}</span>
 			</td>
 			{this.state.editable ?
-				<td><Input onChange={this.update('name')} value={this.name}/></td> :
+				<td><Input onChange={this.update('name')} value={riff.name}/></td> :
 				riff.name ?
 					<td>{riff.name}</td> :
 					<td className="secondary-text">Unnamed section</td>
