@@ -8,7 +8,11 @@ Main stack is:
 
 ## install
   
-    git clone git@github.com:wtfil/slow-tempo.git
-    cd slow-tempo
+    git clone git@github.com:wtfil/song-looper.git
+    cd song-looper
     npm install
     npm start
+
+## deploy
+  
+  npm run deploy
