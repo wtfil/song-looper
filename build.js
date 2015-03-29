@@ -22460,7 +22460,7 @@ var Riff = React.createClass({
 			React.createElement(
 				"td",
 				null,
-				React.createElement("i", { className: "icon-play small" })
+				riff.active && React.createElement("i", { className: "icon-play small" })
 			),
 			React.createElement(
 				"td",
@@ -22475,7 +22475,7 @@ var Riff = React.createClass({
 			this.state.editable ? React.createElement(
 				"td",
 				null,
-				React.createElement(Input, { onChange: this.update("name"), value: this.name })
+				React.createElement(Input, { onChange: this.update("name"), value: riff.name })
 			) : riff.name ? React.createElement(
 				"td",
 				null,
@@ -23017,6 +23017,7 @@ var fluxStore = Reflux.createStore({
 			name: "",
 			from: 0,
 			to: 0,
+			active: false,
 			index: riffs.length
 		};
 		this.updateById(id, "riffs", riffs.concat(riff));
@@ -23032,7 +23033,7 @@ var fluxStore = Reflux.createStore({
 
 	onUpdateRiff: function onUpdateRiff(data) {
 		var riffs = this.getById(data.songId).riffs;
-		extend(riffs[data.index], data);
+		extend(riffs[data.index], data, { active: true });
 		this.updateById(data.songId, "riffs", riffs);
 	},
 
