@@ -116,6 +116,10 @@ button {
 		height: 100%;
 		padding: 0 16px 16px 0;
 		overflow: scroll;
+		/*durty hack */
+		& .song-item {
+			margin-right: -5px;
+		}
 	}
 	&::-webkit-scrollbar {
 		display: none;
@@ -179,6 +183,11 @@ button {
 
 	&__controls {
 		flex: 2;
+		& .progress {
+			display: inline-block;
+			margin: 6px;
+			width: 100px;
+		}
 	}
 
 	&__tempo {
@@ -194,37 +203,6 @@ button {
 		flex: 2;
 		text-align: right;
 	}
-
-	&__controls .progress {
-		display: inline-block;
-		margin: 6px;
-		width: 100px;
-	}
-
-	&__aatempo {
-		line-height: @size;
-		margin-left: 10px;
-		vertical-align: top;
-	}
-
-
-	&__stop {
-		display: inline-block;
-		cursor: pointer;
-		width: @size;
-		height: @size;
-		position: relative;
-		&:after {
-			content: '';
-			position: absolute;
-			top: @padding;
-			left: @padding;
-			width: @size - @padding*2;
-			height: @size - @padding*2;
-			background: @bg-dark;
-		}
-	}
-
 }
 
 .progress {
@@ -551,5 +529,25 @@ button {
 			margin-left: 4px;
 			transform: rotate(45deg);
 		}
+	}
+
+	&-next,
+	&-prev {
+		display: none;
+		.mixin;
+		padding: @size*.2 @size*.1;
+		box-sizing: border-box;
+		&:before,
+		&:after {
+			content: '';
+			display: block;
+			float: left;
+			border-left: solid @size*.4 @bg-dark;
+			border-top: solid @size*.3 transparent;
+			border-bottom: solid @size*.3 transparent;
+		}
+	}
+	&-prev {
+		transform: rotate(180deg);
 	}
 }
