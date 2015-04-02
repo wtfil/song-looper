@@ -114,6 +114,9 @@ var fluxStore = Reflux.createStore({
 
 	isEmpty() {
 		return this.songs.length === 0;
+	},
+	isReady() {
+		return this.ready;
 	}
 
 });

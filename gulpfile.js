@@ -56,7 +56,7 @@ gulp.task('js-watch', function () {
 
     bundler
     	.transform('babelify')
-    	.transform('reactify')
+    	.transform('reactify');
     bundler.on('update', rebundle);
 
     function onError(e) {
