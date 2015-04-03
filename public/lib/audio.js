@@ -1,6 +1,7 @@
 var audio = new Audio();
 var actions = require('./audio-actions');
 var store = require('./audio-store');
+var active = true;
 var lastTimeTrigered;
 
 audio.addEventListener('loadedmetadata', () => {
@@ -16,12 +17,15 @@ audio.addEventListener('timeupdate', () => {
 	}
 });
 
+window.addEventListener('blur', () => {active = false;});
+window.addEventListener('focus', () => {active = true;});
+
 function on() {
 	store.listen(() => {
 		if (audio.playbackRate !== store.tempo) {
 			audio.playbackRate = store.tempo;
 		}
-		if (lastTimeTrigered !== store.current) {
+		if (active && lastTimeTrigered !== store.current) {
 			audio.currentTime = store.current;
 		}
 		if (store.isPlay) {
@@ -33,6 +37,7 @@ function on() {
 			audio.src = store.src;
 		}
 	});
+
 }
 
 module.exports = {on};

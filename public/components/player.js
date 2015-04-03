@@ -32,12 +32,12 @@ module.exports = React.createClass({
 			<PlayerTime current={audioStore.current} duration={audioStore.duration} onChange={this.changePosition}/>
 			<div className="player__footer">
 				<div className="player__controls">
-					<i className="icon-prev" onClick={actions.prevSection} />
+					<i className="icon-prev" onClick={actions.prev} />
 					{audioStore.isPlay ?
 						<i className="mr ml icon-pause" onClick={actions.pause}/> :
 						<i className="mr ml icon-play" onClick={actions.play} />
 					}
-					<i className="icon-next" onClick={actions.nextSection} />
+					<i className="icon-next" onClick={actions.next} />
 				</div>
 				<div className="player__tempo">
 					<span>Temp</span>

@@ -112,6 +112,39 @@ var fluxStore = Reflux.createStore({
 		this.trigger();
 	},
 
+	getNextSong(songId) {
+		var song = this.getById(songId);
+		var index = this.songs.indexOf(song);
+		if (index === -1) {
+			return this.songs[0] || null;
+		}
+		index = index === this.songs.length - 1 ? 0 : (index + 1);
+		return this.songs[index];
+	},
+	getPrevSong(songId) {
+		var song = this.getById(songId);
+		var index = this.songs.indexOf(song);
+		if (index === -1) {
+			return this.songs.slice().pop() || null;
+		}
+		index = index ===  0 ? this.songs.length - 1 : (index - 1);
+		return this.songs[index];
+	},
+
+	getNextSection(songId, riff) {
+		var song = this.getById(songId);
+		var index = song.riffs.indexOf(riff);
+		index = index === song.riffs.length - 1 ? 0 : (index + 1);
+		return song.riffs[index];
+	},
+
+	getPrevSection(songId, riff) {
+		var song = this.getById(songId);
+		var index = song.riffs.indexOf(riff);
+		index = index === 0 ? song.riffs.length - 1 : (index - 1);
+		return song.riffs[index];
+	},
+
 	isEmpty() {
 		return this.songs.length === 0;
 	},

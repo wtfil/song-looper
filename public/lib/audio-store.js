@@ -1,5 +1,6 @@
 var Reflux = require('reflux');
 var actions = require('./audio-actions');
+var library = require('./library');
 
 module.exports = Reflux.createStore({
 	init() {
@@ -11,11 +12,42 @@ module.exports = Reflux.createStore({
 	},
 
 	onChangeSong(song) {
+		this.sondId = song.id;
 		this.current = 0;
 		this.isPlay = true;
 		this.tempo = 1;
 		this.src = song.src;
+		this.riff = null;
 		this.trigger();
+	},
+
+	onSetFileCompleted(src) {
+		this.src = src;
+		this.isPlay = true;
+		this.current = 0;
+		this.trigger();
+	},
+
+	onNextSong() {
+		var song = library.getNextSong(this.sondId);
+		if (song) {
+			this.onChangeSong(song);
+		}
+	},
+
+	onPrevSong() {
+		var song = library.getPrevSong(this.sondId);
+		if (song) {
+			this.onChangeSong(song);
+		}
+	},
+	onNextSection() {
+		var section = library.getNextSection(this.sondId, this.riff);
+		this.setRiff(section);
+	},
+	onPrevSection() {
+		var section = library.getPrevSection(this.sondId, this.riff);
+		this.setRiff(section);
 	},
 
    	onChangeDuration(duration) {
@@ -63,14 +95,19 @@ module.exports = Reflux.createStore({
 		this.tempo = Math.min(2, this.tempo + 0.1);
 		this.trigger();
 	},
+	setRiff(riff) {
+		this.riff = riff;
+		this.current = riff.from;
+		this.isPlay = true;
+		this.trigger();
+	},
+
 	onPlayRiff(data) {
 		if (this.riff === data.riff) {
 			return this.onPausePlay();
 		}
-		this.current = data.riff.from;
 		this.src = data.song.src;
-		this.riff = data.riff;
-		this.isPlay = true;
-		this.trigger();
+		this.sondId = data.song.id;
+		this.setRiff(data.riff);
 	}
 });

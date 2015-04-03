@@ -1,8 +1,15 @@
 var Reflux = require('reflux');
+var playingRiff;
 
 var actions = Reflux.createActions({
 	setFile: {
 		children: ['completed']
+	},
+	next: {
+		children: ['section', 'song']
+	},
+	prev: {
+		children: ['section', 'song']
 	},
 	changePosition: {},
 	addRiff: {},
@@ -21,8 +28,25 @@ var actions = Reflux.createActions({
 	changeSong: {},
 	playRiff: {},
 	deleteRiff: {},
-	nextSection: {},
-	prevSection: {}
+});
+
+actions.playRiff.listen(() => {
+	playingRiff = true;
+});
+actions.changeSong.listen(() => {
+	playingRiff = false;
+});
+
+actions.next.listen(function () {
+	playingRiff ?
+		this.section() :
+		this.song();
+});
+
+actions.prev.listen(function () {
+	playingRiff ?
+		this.section() :
+		this.song();
 });
 
 actions.setFile.listen(function (file) {
@@ -33,11 +57,6 @@ actions.setFile.listen(function (file) {
 	reader.onerror = console.error.bind(console);
 	reader.onload = (e) => this.completed(e.target.result);
 	reader.readAsDataURL(file);
-});
-
-actions.setFile.completed.listen(function (src) {
-	audio.src = src;
-	actions.play();
 });
 
 module.exports = actions;
