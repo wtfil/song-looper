@@ -1,6 +1,6 @@
 var React = require('react');
 var Reflux = require('reflux');
-var store= require('../lib/song-store');
+var library = require('../lib/library');
 var actions = require('../lib/audio-actions');
 var formatTime = require('../lib/format-time');
 var Input = require('./updatable-input');
@@ -178,11 +178,11 @@ var Song = React.createClass({
 
 module.exports = React.createClass({
 	displayName: 'SongsList',
-	mixins: [Reflux.listenTo(store, 'forceUpdate')],
+	mixins: [Reflux.listenTo(library, 'forceUpdate')],
 	render() {
 		return <div className="songs-list">
 			<div className="songs-list__scroll">
-				{store.songs.map((song, key) => <Song key={song.id} song={song}/>)}
+				{library.songs.map((song, key) => <Song key={song.id} song={song}/>)}
 			</div>
 		</div>;
 	}

@@ -1,56 +1,19 @@
 var React = require('react');
 var Reflux = require('reflux');
 var actions = require('./lib/audio-actions');
-var audioStore = require('./lib/audio-store');
-var songStore = require('./lib/song-store');
-var Progress = require('./components/progress');
-var PlayerTime = require('./components/player-time');
+var library = require('./lib/library');
 var SongsList = require('./components/songs-list');
 var SongUpload = require('./components/song-upload');
-
-var Player = React.createClass({
-
-	mixins: [Reflux.listenTo(audioStore, 'forceUpdate')],
-
-	changeTempo(value) {
-		actions.changeTempo(value + 0.5);
-	},
-
-	changePosition(position) {
-		actions.changePosition(position * audioStore.duration);
-	},
-
-	render() {
-		return <div className="player">
-			<PlayerTime current={audioStore.current} duration={audioStore.duration} onChange={this.changePosition}/>
-			<div className="player__footer">
-				<div className="player__controls">
-					{audioStore.isPlay ?
-						<i className="icon-pause" onClick={actions.pause}/> :
-						<i className="icon-play" onClick={actions.play} />
-					}
-				</div>
-				<div className="player__tempo">
-					<span>Temp</span>
-					<Progress progress={audioStore.tempo - 0.5} onChange={this.changeTempo}/>
-					<span>x{audioStore.tempo.toFixed(1)}</span>
-				</div>
-				<div className="player__file">
-					<SongUpload small>Upload new song</SongUpload>
-				</div>
-			</div>
-		</div>;
-	}
-
-});
+var Player = require('./components/player');
+require('./lib/audio').on();
 
 var App = React.createClass({
-	mixins: [Reflux.listenTo(songStore, 'forceUpdate')],
+	mixins: [Reflux.listenTo(library, 'forceUpdate')],
 	render() {
-		if (!songStore.ready) {
+		if (!library.isReady()) {
 			return null;
 		}
-		if (songStore.isEmpty()) {
+		if (library.isEmpty()) {
 			return <div className="app">
 				<div className="center">
 					<SongUpload>Upload song</SongUpload>
@@ -64,7 +27,7 @@ var App = React.createClass({
 	}
 });
 
-window.addEventListener('keyup', function (e) {
+window.addEventListener('keyup', e => {
 	var node = e.target.nodeName;
 	if (node === 'INPUT') {
 		return;
@@ -78,6 +41,6 @@ window.addEventListener('keyup', function (e) {
 	}
 });
 
-window.addEventListener('DOMContentLoaded', function () {
+window.addEventListener('DOMContentLoaded', () => {
 	React.render(<App/>, document.body);
 });

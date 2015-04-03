@@ -101,6 +101,10 @@ button:active {
   height: 100%;
   padding: 0 16px 16px 0;
   overflow: scroll;
+  /*durty hack */
+}
+.songs-list__scroll .song-item {
+  margin-right: -5px;
 }
 .songs-list::-webkit-scrollbar {
   display: none;
@@ -156,6 +160,11 @@ button:active {
 .player__controls {
   flex: 2;
 }
+.player__controls .progress {
+  display: inline-block;
+  margin: 6px;
+  width: 100px;
+}
 .player__tempo {
   flex: 2;
 }
@@ -167,32 +176,6 @@ button:active {
 .player__file {
   flex: 2;
   text-align: right;
-}
-.player__controls .progress {
-  display: inline-block;
-  margin: 6px;
-  width: 100px;
-}
-.player__aatempo {
-  line-height: 26px;
-  margin-left: 10px;
-  vertical-align: top;
-}
-.player__stop {
-  display: inline-block;
-  cursor: pointer;
-  width: 26px;
-  height: 26px;
-  position: relative;
-}
-.player__stop:after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 22px;
-  height: 22px;
-  background: #b7b7b7;
 }
 .progress {
   height: 3px;
@@ -558,4 +541,40 @@ button:active {
   border-width: 0 3px 3px 0;
   margin-left: 4px;
   transform: rotate(45deg);
+}
+.icon-next,
+.icon-prev {
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  display: inline-block;
+  cursor: pointer;
+  font-style: normal;
+  -webkit-user-select: none;
+  padding: 4.8px 2.4px;
+  box-sizing: border-box;
+}
+.icon-next:after,
+.icon-prev:after {
+  font-style: normal;
+  font-size: 24px;
+  color: #a5a5a5;
+}
+.icon-next:hover,
+.icon-prev:hover {
+  opacity: 0.8;
+}
+.icon-next:before,
+.icon-prev:before,
+.icon-next:after,
+.icon-prev:after {
+  content: '';
+  display: block;
+  float: left;
+  border-left: solid 9.6px #b7b7b7;
+  border-top: solid 7.2px transparent;
+  border-bottom: solid 7.2px transparent;
+}
+.icon-prev {
+  transform: rotate(180deg);
 }

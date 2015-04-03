@@ -4,79 +4,21 @@
 var React = require("react");
 var Reflux = require("reflux");
 var actions = require("./lib/audio-actions");
-var audioStore = require("./lib/audio-store");
-var songStore = require("./lib/song-store");
-var Progress = require("./components/progress");
-var PlayerTime = require("./components/player-time");
+var library = require("./lib/library");
 var SongsList = require("./components/songs-list");
 var SongUpload = require("./components/song-upload");
-
-var Player = React.createClass({
-	displayName: "Player",
-
-	mixins: [Reflux.listenTo(audioStore, "forceUpdate")],
-
-	changeTempo: function changeTempo(value) {
-		actions.changeTempo(value + 0.5);
-	},
-
-	changePosition: function changePosition(position) {
-		actions.changePosition(position * audioStore.duration);
-	},
-
-	render: function render() {
-		return React.createElement(
-			"div",
-			{ className: "player" },
-			React.createElement(PlayerTime, { current: audioStore.current, duration: audioStore.duration, onChange: this.changePosition }),
-			React.createElement(
-				"div",
-				{ className: "player__footer" },
-				React.createElement(
-					"div",
-					{ className: "player__controls" },
-					audioStore.isPlay ? React.createElement("i", { className: "icon-pause", onClick: actions.pause }) : React.createElement("i", { className: "icon-play", onClick: actions.play })
-				),
-				React.createElement(
-					"div",
-					{ className: "player__tempo" },
-					React.createElement(
-						"span",
-						null,
-						"Temp"
-					),
-					React.createElement(Progress, { progress: audioStore.tempo - 0.5, onChange: this.changeTempo }),
-					React.createElement(
-						"span",
-						null,
-						"x",
-						audioStore.tempo.toFixed(1)
-					)
-				),
-				React.createElement(
-					"div",
-					{ className: "player__file" },
-					React.createElement(
-						SongUpload,
-						{ small: true },
-						"Upload new song"
-					)
-				)
-			)
-		);
-	}
-
-});
+var Player = require("./components/player");
+require("./lib/audio").on();
 
 var App = React.createClass({
 	displayName: "App",
 
-	mixins: [Reflux.listenTo(songStore, "forceUpdate")],
+	mixins: [Reflux.listenTo(library, "forceUpdate")],
 	render: function render() {
-		if (!songStore.ready) {
+		if (!library.isReady()) {
 			return null;
 		}
-		if (songStore.isEmpty()) {
+		if (library.isEmpty()) {
 			return React.createElement(
 				"div",
 				{ className: "app" },
@@ -123,7 +65,7 @@ window.addEventListener("DOMContentLoaded", function () {
 	React.render(React.createElement(App, null), document.body);
 });
 
-},{"./components/player-time":178,"./components/progress":179,"./components/song-upload":180,"./components/songs-list":181,"./lib/audio-actions":183,"./lib/audio-store":184,"./lib/song-store":186,"react":159,"reflux":160}],2:[function(require,module,exports){
+},{"./components/player":179,"./components/song-upload":181,"./components/songs-list":182,"./lib/audio":186,"./lib/audio-actions":184,"./lib/library":188,"react":159,"reflux":160}],2:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -22350,7 +22292,85 @@ module.exports = React.createClass({
 	}
 });
 
-},{"../lib/format-time":185,"./progress":179,"react":159}],179:[function(require,module,exports){
+},{"../lib/format-time":187,"./progress":180,"react":159}],179:[function(require,module,exports){
+"use strict";
+
+var React = require("react");
+var Reflux = require("reflux");
+var PlayerTime = require("./player-time");
+var Progress = require("./progress");
+var actions = require("../lib/audio-actions");
+var audioStore = require("../lib/audio-store");
+var SongUpload = require("./song-upload");
+
+module.exports = React.createClass({
+
+	displayName: "Player",
+
+	mixins: [Reflux.listenTo(audioStore, "forceUpdate")],
+
+	changeTempo: function changeTempo(value) {
+		actions.changeTempo(value + 0.5);
+	},
+
+	changePosition: function changePosition(position) {
+		actions.changePosition(position * audioStore.duration);
+	},
+
+	next: function next() {
+		actions.nextSection();
+	},
+	prev: function prev() {
+		actions.prevSection();
+	},
+
+	render: function render() {
+		return React.createElement(
+			"div",
+			{ className: "player" },
+			React.createElement(PlayerTime, { current: audioStore.current, duration: audioStore.duration, onChange: this.changePosition }),
+			React.createElement(
+				"div",
+				{ className: "player__footer" },
+				React.createElement(
+					"div",
+					{ className: "player__controls" },
+					React.createElement("i", { className: "icon-prev", onClick: actions.prev }),
+					audioStore.isPlay ? React.createElement("i", { className: "mr ml icon-pause", onClick: actions.pause }) : React.createElement("i", { className: "mr ml icon-play", onClick: actions.play }),
+					React.createElement("i", { className: "icon-next", onClick: actions.next })
+				),
+				React.createElement(
+					"div",
+					{ className: "player__tempo" },
+					React.createElement(
+						"span",
+						null,
+						"Temp"
+					),
+					React.createElement(Progress, { progress: audioStore.tempo - 0.5, onChange: this.changeTempo }),
+					React.createElement(
+						"span",
+						null,
+						"x",
+						audioStore.tempo.toFixed(1)
+					)
+				),
+				React.createElement(
+					"div",
+					{ className: "player__file" },
+					React.createElement(
+						SongUpload,
+						{ small: true },
+						"Upload new song"
+					)
+				)
+			)
+		);
+	}
+
+});
+
+},{"../lib/audio-actions":184,"../lib/audio-store":185,"./player-time":178,"./progress":180,"./song-upload":181,"react":159,"reflux":160}],180:[function(require,module,exports){
 "use strict";
 
 var React = require("react");
@@ -22383,7 +22403,7 @@ module.exports = React.createClass({
 	}
 });
 
-},{"react":159}],180:[function(require,module,exports){
+},{"react":159}],181:[function(require,module,exports){
 "use strict";
 
 var React = require("react");
@@ -22423,12 +22443,12 @@ module.exports = React.createClass({
 
 });
 
-},{"../lib/audio-actions":183,"react":159}],181:[function(require,module,exports){
+},{"../lib/audio-actions":184,"react":159}],182:[function(require,module,exports){
 "use strict";
 
 var React = require("react");
 var Reflux = require("reflux");
-var store = require("../lib/song-store");
+var library = require("../lib/library");
 var actions = require("../lib/audio-actions");
 var formatTime = require("../lib/format-time");
 var Input = require("./updatable-input");
@@ -22698,7 +22718,7 @@ var Song = React.createClass({
 
 module.exports = React.createClass({
 	displayName: "SongsList",
-	mixins: [Reflux.listenTo(store, "forceUpdate")],
+	mixins: [Reflux.listenTo(library, "forceUpdate")],
 	render: function render() {
 		return React.createElement(
 			"div",
@@ -22706,7 +22726,7 @@ module.exports = React.createClass({
 			React.createElement(
 				"div",
 				{ className: "songs-list__scroll" },
-				store.songs.map(function (song, key) {
+				library.songs.map(function (song, key) {
 					return React.createElement(Song, { key: song.id, song: song });
 				})
 			)
@@ -22714,7 +22734,7 @@ module.exports = React.createClass({
 	}
 });
 
-},{"../lib/audio-actions":183,"../lib/format-time":185,"../lib/song-store":186,"./updatable-input":182,"react":159,"reflux":160}],182:[function(require,module,exports){
+},{"../lib/audio-actions":184,"../lib/format-time":187,"../lib/library":188,"./updatable-input":183,"react":159,"reflux":160}],183:[function(require,module,exports){
 "use strict";
 
 var React = require("react");
@@ -22764,20 +22784,23 @@ module.exports = React.createClass({
 	}
 });
 
-},{"react":159}],183:[function(require,module,exports){
+},{"react":159}],184:[function(require,module,exports){
 "use strict";
 
 var Reflux = require("reflux");
-var audio = new Audio();
-var currentRiff;
+var playingRiff;
 
 var actions = Reflux.createActions({
 	setFile: {
 		children: ["completed"]
 	},
-	changePosition: {
-		children: ["completed"]
+	next: {
+		children: ["section", "song"]
 	},
+	prev: {
+		children: ["section", "song"]
+	},
+	changePosition: {},
 	addRiff: {},
 	updateRiff: {},
 	deleteSong: {},
@@ -22793,53 +22816,21 @@ var actions = Reflux.createActions({
 	changeDuration: {},
 	changeSong: {},
 	playRiff: {},
-	deleteRiff: {}
+	deleteRiff: {} });
+
+actions.playRiff.listen(function () {
+	playingRiff = true;
+});
+actions.changeSong.listen(function () {
+	playingRiff = false;
 });
 
-audio.addEventListener("loadedmetadata", function () {
-	actions.changeDuration(audio.duration);
-});
-audio.addEventListener("timeupdate", function () {
-	var time = audio.currentTime;
-	if (currentRiff && time > currentRiff.to) {
-		audio.currentTime = currentRiff.from;
-	} else {
-		actions.changePosition.completed(audio.currentTime);
-	}
+actions.next.listen(function () {
+	playingRiff ? this.section() : this.song();
 });
 
-actions.changePosition.listen(function (position) {
-	audio.currentTime = position;
-	this.completed(position);
-});
-actions.speedUp.listen(function () {
-	actions.changeTempo(audio.playbackRate += 0.1);
-});
-actions.slowDown.listen(function () {
-	actions.changeTempo(audio.playbackRate -= 0.1);
-});
-actions.jumpForward.listen(function () {
-	audio.currentTime += 5;
-});
-actions.jumpBack.listen(function () {
-	audio.currentTime -= 5;
-});
-actions.changeTempo.listen(function (tempo) {
-	audio.playbackRate = tempo;
-});
-actions.play.listen(function () {
-	audio.play();
-});
-actions.pause.listen(function () {
-	audio.pause();
-});
-
-actions.pausePlay.listen(function () {
-	if (audio.paused) {
-		actions.play();
-	} else {
-		actions.pause();
-	}
+actions.prev.listen(function () {
+	playingRiff ? this.section() : this.song();
 });
 
 actions.setFile.listen(function (file) {
@@ -22848,7 +22839,6 @@ actions.setFile.listen(function (file) {
 	if (!file) {
 		return;
 	}
-	console.log(file);
 	var reader = new FileReader();
 	reader.onerror = console.error.bind(console);
 	reader.onload = function (e) {
@@ -22857,51 +22847,61 @@ actions.setFile.listen(function (file) {
 	reader.readAsDataURL(file);
 });
 
-actions.setFile.completed.listen(function (src) {
-	audio.src = src;
-	actions.play();
-});
-
-function updateRiff(riff) {
-	currentRiff = riff;
-	if (riff) {
-		audio.currentTime = riff.from;
-	}
-}
-
-actions.changeSong.listen(function (song) {
-	if (!currentRiff && audio.src === song.src) {
-		return actions.pausePlay();
-	}
-	audio.src = song.src;
-	currentRiff = null;
-	actions.play();
-});
-actions.playRiff.listen(function (data) {
-	if (data.riff === currentRiff) {
-		return actions.pausePlay();
-	}
-	audio.src = data.song.src;
-	updateRiff(data.riff);
-	actions.play();
-});
-
 module.exports = actions;
 
-},{"reflux":160}],184:[function(require,module,exports){
+},{"reflux":160}],185:[function(require,module,exports){
 "use strict";
 
 var Reflux = require("reflux");
 var actions = require("./audio-actions");
+var library = require("./library");
 
 module.exports = Reflux.createStore({
 	init: function init() {
 		this.listenToMany(actions);
-		this.listenTo(actions.changePosition.completed, "onChangePositionCompleted");
 		this.duration = 0;
 		this.tempo = 1;
 		this.current = 0;
 		this.isPlay = false;
+	},
+
+	onChangeSong: function onChangeSong(song) {
+		this.sondId = song.id;
+		this.current = 0;
+		this.isPlay = true;
+		this.tempo = 1;
+		this.src = song.src;
+		this.riff = null;
+		this.trigger();
+	},
+
+	onSetFileCompleted: function onSetFileCompleted(src) {
+		this.src = src;
+		this.isPlay = true;
+		this.current = 0;
+		this.trigger();
+	},
+
+	onNextSong: function onNextSong() {
+		var song = library.getNextSong(this.sondId);
+		if (song) {
+			this.onChangeSong(song);
+		}
+	},
+
+	onPrevSong: function onPrevSong() {
+		var song = library.getPrevSong(this.sondId);
+		if (song) {
+			this.onChangeSong(song);
+		}
+	},
+	onNextSection: function onNextSection() {
+		var section = library.getNextSection(this.sondId, this.riff);
+		this.setRiff(section);
+	},
+	onPrevSection: function onPrevSection() {
+		var section = library.getPrevSection(this.sondId, this.riff);
+		this.setRiff(section);
 	},
 
 	onChangeDuration: function onChangeDuration(duration) {
@@ -22909,7 +22909,16 @@ module.exports = Reflux.createStore({
 		this.trigger();
 	},
 
-	onChangePositionCompleted: function onChangePositionCompleted(current) {
+	onJumpForward: function onJumpForward() {
+		this.current = Math.min(this.current + 5, this.duration);
+		this.trigger();
+	},
+	onJumpBack: function onJumpBack() {
+		this.current = Math.max(this.current - 5, 0);
+		this.trigger();
+	},
+
+	onChangePosition: function onChangePosition(current) {
 		this.current = current;
 		this.trigger();
 	},
@@ -22922,13 +22931,90 @@ module.exports = Reflux.createStore({
 		this.isPlay = true;
 		this.trigger();
 	},
+	onPausePlay: function onPausePlay() {
+		this.isPlay ? this.onPause() : this.onPlay();
+	},
+
 	onChangeTempo: function onChangeTempo(tempo) {
 		this.tempo = tempo;
 		this.trigger();
+	},
+	onSlowDown: function onSlowDown() {
+		this.tempo = Math.max(0.1, this.tempo - 0.1);
+		this.trigger();
+	},
+	onSpeedUp: function onSpeedUp() {
+		this.tempo = Math.min(2, this.tempo + 0.1);
+		this.trigger();
+	},
+	setRiff: function setRiff(riff) {
+		this.riff = riff;
+		this.current = riff.from;
+		this.isPlay = true;
+		this.trigger();
+	},
+
+	onPlayRiff: function onPlayRiff(data) {
+		if (this.riff === data.riff) {
+			return this.onPausePlay();
+		}
+		this.src = data.song.src;
+		this.sondId = data.song.id;
+		this.setRiff(data.riff);
 	}
 });
 
-},{"./audio-actions":183,"reflux":160}],185:[function(require,module,exports){
+},{"./audio-actions":184,"./library":188,"reflux":160}],186:[function(require,module,exports){
+"use strict";
+
+var audio = new Audio();
+var actions = require("./audio-actions");
+var store = require("./audio-store");
+var active = true;
+var lastTimeTrigered;
+
+audio.addEventListener("loadedmetadata", function () {
+	actions.changeDuration(audio.duration);
+});
+audio.addEventListener("timeupdate", function () {
+	var time = audio.currentTime;
+	lastTimeTrigered = time;
+	if (store.riff && time > store.riff.to) {
+		audio.currentTime = store.riff.from;
+	} else {
+		actions.changePosition(audio.currentTime);
+	}
+});
+
+window.addEventListener("blur", function () {
+	active = false;
+});
+window.addEventListener("focus", function () {
+	active = true;
+});
+
+function on() {
+	store.listen(function () {
+		if (audio.playbackRate !== store.tempo) {
+			audio.playbackRate = store.tempo;
+		}
+		if (active && lastTimeTrigered !== store.current) {
+			audio.currentTime = store.current;
+		}
+		if (store.isPlay) {
+			audio.play();
+		} else {
+			audio.pause();
+		}
+		if (audio.src !== store.src) {
+			audio.src = store.src;
+		}
+	});
+}
+
+module.exports = { on: on };
+
+},{"./audio-actions":184,"./audio-store":185}],187:[function(require,module,exports){
 "use strict";
 
 module.exports = function formatTime(time) {
@@ -22943,7 +23029,7 @@ module.exports = function formatTime(time) {
 	return minutes + ":" + seconds;
 };
 
-},{}],186:[function(require,module,exports){
+},{}],188:[function(require,module,exports){
 "use strict";
 
 var Reflux = require("reflux");
@@ -23061,12 +23147,48 @@ var fluxStore = Reflux.createStore({
 		this.trigger();
 	},
 
+	getNextSong: function getNextSong(songId) {
+		var song = this.getById(songId);
+		var index = this.songs.indexOf(song);
+		if (index === -1) {
+			return this.songs[0] || null;
+		}
+		index = index === this.songs.length - 1 ? 0 : index + 1;
+		return this.songs[index];
+	},
+	getPrevSong: function getPrevSong(songId) {
+		var song = this.getById(songId);
+		var index = this.songs.indexOf(song);
+		if (index === -1) {
+			return this.songs.slice().pop() || null;
+		}
+		index = index === 0 ? this.songs.length - 1 : index - 1;
+		return this.songs[index];
+	},
+
+	getNextSection: function getNextSection(songId, riff) {
+		var song = this.getById(songId);
+		var index = song.riffs.indexOf(riff);
+		index = index === song.riffs.length - 1 ? 0 : index + 1;
+		return song.riffs[index];
+	},
+
+	getPrevSection: function getPrevSection(songId, riff) {
+		var song = this.getById(songId);
+		var index = song.riffs.indexOf(riff);
+		index = index === 0 ? song.riffs.length - 1 : index - 1;
+		return song.riffs[index];
+	},
+
 	isEmpty: function isEmpty() {
 		return this.songs.length === 0;
+	},
+	isReady: function isReady() {
+		return this.ready;
 	}
 
 });
 
 module.exports = fluxStore;
 
-},{"./audio-actions":183,"extend":3,"idb-wrapper":4,"reflux":160}]},{},[1]);
+},{"./audio-actions":184,"extend":3,"idb-wrapper":4,"reflux":160}]},{},[1]);
