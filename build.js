@@ -22668,6 +22668,12 @@ var Song = React.createClass({
 				{ className: "song-item__collapse", onClick: this.addRiff },
 				"Add section"
 			),
+			React.createElement(
+				"span",
+				{ className: "song-item__delete", onClick: this.deleteSong },
+				React.createElement("i", { className: "icon-delete" }),
+				"Delete song"
+			),
 			this.state.editable && React.createElement(
 				"div",
 				{ className: "song-item__options", onClick: this.stopPropagation },
@@ -22695,7 +22701,8 @@ var Song = React.createClass({
 		this.setState({ editable: false });
 	},
 
-	deleteItem: function deleteItem() {
+	deleteSong: function deleteSong(e) {
+		e.stopPropagation();
 		actions.deleteSong(this.props.song.id);
 	},
 	updateName: function updateName(name) {

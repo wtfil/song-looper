@@ -126,8 +126,22 @@ button:active {
   float: left;
   display: block;
 }
+.song-item__delete {
+  float: right;
+  margin-right: 88px;
+  padding-top: 3px;
+}
+.song-item__delete .icon-delete {
+  display: inline-block;
+  margin-right: 8px;
+}
 .song-item__name {
   line-height: 26px;
+  max-width: 50%;
+  display: inline-block;
+  white-space: pre;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .song-item__options {
   margin-top: 14px;
