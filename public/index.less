@@ -142,8 +142,22 @@ button {
 		float: left;
 		display: block;
 	}
+	&__delete {
+		float: right;
+		margin-right: 88px;
+		padding-top: 3px;
+		& .icon-delete {
+			display: inline-block;
+			margin-right: 8px;
+		}
+	}
 	&__name {
 		line-height: 26px;
+		max-width: 50%;
+		display: inline-block;
+		white-space: pre;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 	&__options {
 		margin-top: 14px;

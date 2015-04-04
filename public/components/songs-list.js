@@ -130,6 +130,10 @@ var Song = React.createClass({
 					<div className="song-item__collapse" onClick={this.open}>Open</div> :
 					<div className="song-item__collapse" onClick={this.addRiff}>Add section</div>
 			}
+			<span className="song-item__delete" onClick={this.deleteSong}>
+				<i className="icon-delete"></i>
+				Delete song
+			</span>
 			{this.state.editable && <div className="song-item__options" onClick={this.stopPropagation}>
 				<Riffs riffs={this.state.riffs} song={this.props.song} />
 			</div>}
@@ -155,7 +159,8 @@ var Song = React.createClass({
 		this.setState({editable: false});
 	},
 
-	deleteItem() {
+	deleteSong(e) {
+		e.stopPropagation();
 		actions.deleteSong(this.props.song.id);
 	},
 	updateName(name) {
