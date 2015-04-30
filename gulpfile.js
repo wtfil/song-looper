@@ -50,9 +50,7 @@ gulp.task('css-watch', ['css'], function () {
 });
 
 gulp.task('js-watch', function () {
-    var args = watchify.args;
-    args.degub = true;
-    var bundler = watchify(browserify(files.js.src, args));
+    var bundler = watchify(browserify(files.js.src, {debug: true}));
 
     bundler
     	.transform('babelify')
