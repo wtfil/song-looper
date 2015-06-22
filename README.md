@@ -7,7 +7,7 @@ Main stack is:
 * indexedDB
 
 ## demo
-wtfil.github.io/song-looper/
+http://wtfil.github.io/song-looper/
 
 ## install
   
